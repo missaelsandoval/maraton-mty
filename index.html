@@ -1,0 +1,111 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Maratón MTY</title>
+<meta name="description" content="Seguimiento del plan de entrenamiento para el Maratón Powerade Monterrey.">
+<link rel="manifest" href="manifest.webmanifest">
+<meta name="theme-color" content="#fcfcfb" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#1a1a19" media="(prefers-color-scheme: dark)">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Maratón MTY">
+<link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
+<link rel="icon" href="icons/icon-192.png">
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+<header class="topbar">
+  <div class="topbar-title">Maratón MTY</div>
+  <div class="topbar-count" id="countdown"></div>
+</header>
+
+<main id="main">
+
+  <!-- ── HOY ───────────────────────────────────────────────── -->
+  <section class="view" id="view-hoy">
+    <div id="hoy-content"></div>
+  </section>
+
+  <!-- ── SEMANA ────────────────────────────────────────────── -->
+  <section class="view" id="view-semana" hidden>
+    <div class="weeknav">
+      <button class="iconbtn" id="wk-prev" aria-label="Semana anterior">‹</button>
+      <div class="weeknav-label" id="wk-label"></div>
+      <button class="iconbtn" id="wk-next" aria-label="Semana siguiente">›</button>
+    </div>
+    <div id="semana-content"></div>
+  </section>
+
+  <!-- ── PLAN ──────────────────────────────────────────────── -->
+  <section class="view" id="view-plan" hidden>
+    <div id="plan-content"></div>
+  </section>
+
+  <!-- ── EXPORTAR ──────────────────────────────────────────── -->
+  <section class="view" id="view-exportar" hidden>
+    <div id="exportar-content"></div>
+  </section>
+
+</main>
+
+<nav class="tabbar" role="tablist">
+  <button class="tab is-active" data-view="hoy" role="tab" aria-selected="true">
+    <span class="tab-ico" aria-hidden="true">●</span><span>Hoy</span>
+  </button>
+  <button class="tab" data-view="semana" role="tab" aria-selected="false">
+    <span class="tab-ico" aria-hidden="true">▦</span><span>Semana</span>
+  </button>
+  <button class="tab" data-view="plan" role="tab" aria-selected="false">
+    <span class="tab-ico" aria-hidden="true">▤</span><span>Plan</span>
+  </button>
+  <button class="tab" data-view="exportar" role="tab" aria-selected="false">
+    <span class="tab-ico" aria-hidden="true">↥</span><span>Exportar</span>
+  </button>
+</nav>
+
+<!-- ── Hoja de captura ─────────────────────────────────────── -->
+<div class="sheet-backdrop" id="sheet-backdrop" hidden></div>
+<div class="sheet" id="sheet" hidden role="dialog" aria-modal="true" aria-labelledby="sheet-title">
+  <div class="sheet-grab"></div>
+  <h2 class="sheet-title" id="sheet-title">Registrar sesión</h2>
+  <p class="sheet-sub" id="sheet-sub"></p>
+
+  <form id="log-form">
+    <div class="field-row">
+      <label class="field">
+        <span>Distancia (km)</span>
+        <input type="number" id="f-km" inputmode="decimal" step="0.1" min="0" placeholder="0.0">
+      </label>
+      <label class="field">
+        <span>Tiempo (min)</span>
+        <input type="number" id="f-time" inputmode="numeric" step="1" min="0" placeholder="0">
+      </label>
+    </div>
+
+    <label class="field">
+      <span>Sensación · <b id="rpe-val">5</b>/10 <em id="rpe-word">normal</em></span>
+      <input type="range" id="f-rpe" min="1" max="10" step="1" value="5">
+    </label>
+
+    <label class="field">
+      <span>Notas</span>
+      <textarea id="f-notes" rows="2" placeholder="Molestias, clima, cómo te sentiste…"></textarea>
+    </label>
+
+    <div class="sheet-actions">
+      <button type="button" class="btn btn-ghost" id="sheet-cancel">Cancelar</button>
+      <button type="button" class="btn btn-danger" id="sheet-delete" hidden>Borrar</button>
+      <button type="submit" class="btn btn-primary">Guardar</button>
+    </div>
+  </form>
+</div>
+
+<div class="toast" id="toast" hidden></div>
+
+<script src="plan.js"></script>
+<script src="app.js"></script>
+</body>
+</html>
