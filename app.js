@@ -106,6 +106,15 @@
         <div class="hero-type" style="color:${cfg.color}">${cfg.label}</div>
         ${s.km > 0 ? `<div class="hero-km">${fmtKm(s.km)}<small>km</small></div>` : ''}
         <p class="hero-desc">${esc(s.desc)}</p>
+        ${s.pace ? `<div class="pace-box">
+          <span class="pace-l">Ritmo objetivo</span>
+          <span class="pace-v">${esc(s.pace)}</span>
+        </div>` : ''}
+        ${s.fuerza ? `<div class="pace-box pace-alt">
+          <span class="pace-l">Además hoy</span>
+          <span class="pace-v">Fuerza ${s.fuerza} · 30–35 min, después de correr</span>
+        </div>` : ''}
+        ${s.week.num <= 9 && s.km > 0 ? `<p class="note note-warn">${esc(PLAN.calor)}</p>` : ''}
         <div style="margin-top:16px">
           ${done
             ? `<span class="pill is-done"><span class="pill-dot"></span>Registrado${e && e.km ? ` · ${fmtKm(e.km)} km` : ''}${e && e.timeMin ? ` · ${e.timeMin} min` : ''}</span>
@@ -123,7 +132,7 @@
     html += `<div class="stat-row">
       <div class="stat"><div class="stat-v">${dLeft > 0 ? dLeft : 0}</div><div class="stat-l">días para la carrera</div></div>
       <div class="stat"><div class="stat-v">${fmtKm(weekActual(w))}<span style="font-size:13px;color:var(--ink-muted)">/${w.targetKm}</span></div><div class="stat-l">km esta semana</div></div>
-      <div class="stat"><div class="stat-v">${T.sessions}</div><div class="stat-l">sesiones hechas</div></div>
+      <div class="stat"><div class="stat-v">${T.sessions}</div><div class="stat-l">${T.sessions === 1 ? 'sesión hecha' : 'sesiones hechas'}</div></div>
     </div>`;
 
     // Próximas 3 sesiones con km
@@ -179,8 +188,9 @@
         <span class="day-num">${d.getDate()}</span>
       </span>
       <span class="day-body">
-        <span class="day-type">${cfg.label}</span>
+        <span class="day-type">${cfg.label}${s.fuerza ? `<span class="chip-f">Fuerza ${s.fuerza}</span>` : ''}</span>
         <span class="day-desc">${esc(s.desc)}</span>
+        ${s.pace ? `<span class="day-pace">${esc(s.pace)}</span>` : ''}
       </span>
       <span class="day-km">${kmTxt}</span>
       <span class="day-check ${done ? 'is-done' : ''}">✓</span>
@@ -258,10 +268,34 @@
     });
     html += `</div>`;
 
-    html += `<div class="card">
+    html += `<h2 class="section-h">Tus ritmos</h2>
+    <div class="card">
+      <div class="zonas">
+        ${PLAN.zonas.map(z => `<div class="zona">
+          <span class="zona-n">${esc(z.zona)}</span>
+          <span class="zona-p">${esc(z.minkm)}<small>/km</small></span>
+          <span class="zona-k">${esc(z.kmh)} km/h</span>
+          <span class="zona-s">${esc(z.sensacion)}</span>
+        </div>`).join('')}
+      </div>
+      <p class="note">${esc(PLAN.calor)}</p>
+    </div>
+
+    <div class="card">
+      <p class="eyebrow">Estrategia</p>
+      <p class="hero-desc" style="font-size:15px">${esc(PLAN.estrategia)}</p>
+    </div>
+
+    <div class="card">
       <p class="eyebrow">Carrera objetivo</p>
       <div style="font-size:17px;font-weight:650;margin-bottom:4px">${esc(PLAN.race.name)}</div>
       <p class="note" style="margin-top:0">Domingo ${fmtCorto(PLAN.race.date)} de 2026 · salida ${PLAN.race.time} · ${esc(PLAN.race.location)}</p>
+      <div class="stat-row" style="margin-top:14px">
+        <div class="stat"><div class="stat-v" style="font-size:19px">${esc(PLAN.race.objetivo)}</div><div class="stat-l">objetivo</div></div>
+        <div class="stat"><div class="stat-v" style="font-size:19px">${esc(PLAN.race.ritmoMeta.split(' · ')[0])}</div><div class="stat-l">ritmo meta</div></div>
+        <div class="stat"><div class="stat-v" style="font-size:19px">${esc(PLAN.race.limite)}</div><div class="stat-l">límite oficial</div></div>
+      </div>
+      <p class="note note-warn">${esc(PLAN.race.corte)} — ese corte es el problema real del plan.</p>
     </div>`;
 
     document.getElementById('plan-content').innerHTML = html;
@@ -380,7 +414,11 @@
 
     document.getElementById('sheet-title').textContent = TIPO[s.type].label;
     document.getElementById('sheet-sub').textContent =
-      `${s.dow} ${fmtCorto(s.date)}${s.km > 0 ? ` · plan: ${fmtKm(s.km)} km` : ''}`;
+      `${s.dow} ${fmtCorto(s.date)}${s.km > 0 ? ` · plan: ${fmtKm(s.km)} km` : ''}` +
+      (s.pace ? ` · ${s.pace}` : '');
+    const sd = document.getElementById('sheet-desc');
+    sd.textContent = s.desc + (s.fuerza ? ` · Fuerza ${s.fuerza} después de correr.` : '');
+    sd.hidden = false;
     document.getElementById('f-km').value = e.km != null ? e.km : (rest ? '' : s.km);
     document.getElementById('f-time').value = e.timeMin != null ? e.timeMin : '';
     document.getElementById('f-rpe').value = e.rpe != null ? e.rpe : 5;
