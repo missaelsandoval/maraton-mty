@@ -1,5 +1,7 @@
 # Maratón MTY
 
+**En vivo: https://missaelsandoval.github.io/maraton-mty/**
+
 PWA de seguimiento del plan de entrenamiento hacia el **Maratón Powerade
 Monterrey** (domingo 13-dic-2026, Parque Fundidora).
 
