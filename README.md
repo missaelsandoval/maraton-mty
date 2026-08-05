@@ -41,6 +41,66 @@ Luego `http://localhost:8765`. En Claude Code: `preview_start` con la config
 2. Botón Compartir → **Agregar a pantalla de inicio**.
 3. Abrirla desde el ícono: se ve a pantalla completa, sin barra del navegador.
 
+## Traer datos de la app Salud
+
+Safari no puede leer HealthKit — no existe API web, y Web Bluetooth tampoco
+está en iOS. El puente es **Atajos**, que sí lee Salud, corre en el teléfono y
+no manda nada a ningún servidor.
+
+### El formato
+
+Líneas, no JSON: Atajos produce texto plano con un bloque `Texto` y ya;
+construir JSON válido ahí es doloroso. Además se lee y se corrige a ojo.
+
+```
+FCR   2026-08-04 69        · frecuencia en reposo, ppm
+PESO  2026-08-04 109.2     · kg (acepta coma decimal: 109,2)
+SUENO 2026-08-04 380       · minutos dormidos
+ENT   2026-08-04 3.2 36 142 · km, minutos, FC media (la FC es opcional)
+```
+
+Separadores: espacios o `;`. **Coma no** — se usa para decimales. La fecha va
+en `YYYY-MM-DD`. Las etiquetas no distinguen mayúsculas. Las líneas que no
+encajan se ignoran y se reportan; nunca tumban la importación.
+
+`ENT` se cruza con la sesión del plan de esa fecha: si no hay sesión ese día,
+se ignora. Los campos que ya tenías capturados a mano (sensación, notas) se
+conservan.
+
+### El Atajo, paso a paso
+
+1. Atajos → **+** → nombre: `Salud → Maratón`.
+2. **Texto** vacío → **Definir variable** `salida`.
+3. **Buscar muestras de salud**: tipo *Frecuencia cardiaca en reposo*,
+   ordenar por *Fecha de inicio*, descendente, límite **30**.
+4. **Repetir con cada** → dentro:
+   - **Formatear fecha** (Fecha de inicio del elemento) formato personalizado `yyyy-MM-dd`
+   - **Texto**: `FCR [fecha formateada] [Elemento repetido]`
+   - **Añadir a variable** `salida`
+5. Repite los pasos 3–4 para *Masa corporal* (`PESO`) y *Entrenamientos*
+   (`ENT`, con distancia, duración y FC media).
+6. **Combinar texto** de `salida` con *Líneas nuevas* → **Copiar al portapapeles**.
+
+Luego, en la app: **Exportar → Importar de Salud**.
+
+> **Sueño es el más latoso.** Las muestras de *Análisis del sueño* vienen por
+> tramo, no por noche, así que hay que sumarlas por día. Conviene dejarlo para
+> el final: arranca con `FCR`, `PESO` y `ENT`, que son directos.
+
+> Si iOS niega la lectura del portapapeles, la app abre sola un cuadro para
+> pegar a mano. El botón **Pegar a mano…** hace lo mismo a propósito.
+
+### Qué hace con eso
+
+- **Frecuencia en reposo** — implementa la regla de alto del plan: 3 días
+  consecutivos con FCR ≥ base+7 muestran una alerta en *Hoy*. La base son 69
+  ppm hasta que haya 14+ muestras; de ahí en adelante es la mediana de las
+  tuyas (la mediana aguanta días sueltos altos sin desplazarse).
+- **Peso y sueño** — tendencia de 30 días en *Plan → Tu cuerpo*, con la línea
+  punteada del umbral.
+- **Entrenamientos** — prellenan el registro y aparecen en el export con FC
+  media y FC en reposo de ese día.
+
 ## Actualizar el plan
 
 1. Regenerar o editar `plan.js`.

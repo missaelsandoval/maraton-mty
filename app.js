@@ -4,6 +4,13 @@
   'use strict';
 
   const LOG_KEY = 'mmty-log-v1';
+  const SALUD_KEY = 'mmty-salud-v1';
+
+  // Regla de alto del plan: FC en reposo 7+ ppm arriba de la base, 3 días
+  // seguidos = no estás absorbiendo la carga.
+  const RHR_BASE_DEFAULT = 69;
+  const RHR_DELTA = 7;
+  const RHR_DIAS = 3;
 
   const TIPO = {
     descanso: { label: 'Descanso',       color: 'var(--ink-muted)' },
@@ -19,6 +26,7 @@
 
   // ── Estado ────────────────────────────────────────────────
   let log = load();
+  let salud = loadSalud();
   let view = 'hoy';
   let weekIdx = 0;
   let editingId = null;
@@ -30,6 +38,99 @@
   function save() {
     try { localStorage.setItem(LOG_KEY, JSON.stringify(log)); }
     catch (e) { toast('No se pudo guardar. ¿Almacenamiento lleno?'); }
+  }
+  function loadSalud() {
+    try { return JSON.parse(localStorage.getItem(SALUD_KEY)) || {}; }
+    catch (e) { return {}; }
+  }
+  function saveSalud() {
+    try { localStorage.setItem(SALUD_KEY, JSON.stringify(salud)); }
+    catch (e) { toast('No se pudo guardar Salud.'); }
+  }
+
+  // ── Importación desde Salud (vía Atajos) ──────────────────
+  /* Formato de líneas, no JSON: Atajos lo produce con un bloque de texto
+     simple, y así puedes leerlo y corregirlo a ojo.
+       FCR   <fecha> <ppm>
+       PESO  <fecha> <kg>
+       SUENO <fecha> <minutos>
+       ENT   <fecha> <km> <minutos> [fcMedia]
+     Las líneas que no encajan se ignoran en vez de tumbar la importación. */
+  function parseSalud(texto) {
+    const res = { dias: 0, entrenos: 0, ignoradas: 0, fechas: [] };
+    const nuevoS = {}, nuevoE = [];
+    String(texto).split(/[\r\n]+/).forEach(raw => {
+      const l = raw.trim();
+      if (!l) return;
+      // Ojo: NO separar por coma — "109,2" es un decimal, no dos campos.
+      const p = l.split(/[\s;]+/);
+      const tag = (p[0] || '').toUpperCase();
+      const f = p[1] || '';
+      if (!/^\d{4}-\d{2}-\d{2}$/.test(f)) { if (tag) res.ignoradas++; return; }
+      const num = i => { const v = parseFloat(String(p[i]).replace(',', '.')); return isFinite(v) ? v : null; };
+      if (tag === 'FCR' || tag === 'PESO' || tag === 'SUENO' || tag === 'SUEÑO') {
+        const v = num(2);
+        if (v == null || v <= 0) { res.ignoradas++; return; }
+        nuevoS[f] = nuevoS[f] || {};
+        if (tag === 'FCR') nuevoS[f].fcReposo = Math.round(v);
+        else if (tag === 'PESO') nuevoS[f].peso = Math.round(v * 10) / 10;
+        else nuevoS[f].suenoMin = Math.round(v);
+      } else if (tag === 'ENT') {
+        const km = num(2), min = num(3), fc = num(4);
+        if (km == null && min == null) { res.ignoradas++; return; }
+        nuevoE.push({ fecha: f, km, min, fc });
+      } else { res.ignoradas++; }
+    });
+
+    Object.keys(nuevoS).forEach(f => {
+      salud[f] = Object.assign({}, salud[f], nuevoS[f]);
+      res.dias++;
+    });
+
+    // Los entrenamientos se cruzan con la sesión del plan de ese día.
+    nuevoE.forEach(e => {
+      const s = sessionByDate(e.fecha);
+      if (!s) { res.ignoradas++; return; }
+      const prev = log[s.id] || {};
+      log[s.id] = Object.assign({}, prev, {
+        done: true,
+        km: e.km != null ? e.km : (prev.km || 0),
+        timeMin: e.min != null ? Math.round(e.min) : (prev.timeMin ?? null),
+        fcMedia: e.fc != null ? Math.round(e.fc) : (prev.fcMedia ?? null),
+        rpe: prev.rpe ?? 5,
+        notes: prev.notes || '',
+        fuente: 'Salud',
+        loggedAt: new Date().toISOString(),
+      });
+      res.entrenos++;
+      res.fechas.push(e.fecha);
+    });
+
+    if (res.dias) saveSalud();
+    if (res.entrenos) save();
+    return res;
+  }
+
+  // ── Regla de FC en reposo ─────────────────────────────────
+  function saludOrdenado() {
+    return Object.keys(salud).sort().map(f => Object.assign({ fecha: f }, salud[f]));
+  }
+  function rhrBase() {
+    const v = saludOrdenado().map(d => d.fcReposo).filter(Number.isFinite);
+    if (v.length < 14) return RHR_BASE_DEFAULT;      // sin datos suficientes, la del plan
+    const s = v.slice().sort((a, b) => a - b);
+    return Math.round(s[Math.floor(s.length / 2)]);  // mediana: aguanta días sueltos altos
+  }
+  function alertaRHR() {
+    const base = rhrBase(), lim = base + RHR_DELTA;
+    const dias = saludOrdenado().filter(d => Number.isFinite(d.fcReposo)).slice(-RHR_DIAS);
+    if (dias.length < RHR_DIAS) return null;
+    // Deben ser días consecutivos, no tres lecturas sueltas del mes.
+    for (let i = 1; i < dias.length; i++) {
+      if (daysBetween(dias[i - 1].fecha, dias[i].fecha) !== 1) return null;
+    }
+    if (!dias.every(d => d.fcReposo >= lim)) return null;
+    return { base, lim, dias };
   }
 
   // ── Fechas (todo en local, sin UTC) ───────────────────────
@@ -85,6 +186,19 @@
     const dLeft = daysBetween(t, race);
 
     let html = '';
+
+    // La única regla del plan que no puedes vigilar a ojo.
+    const al = alertaRHR();
+    if (al) {
+      html += `<div class="alerta">
+        <p class="alerta-t">Tu cuerpo pide un freno</p>
+        <p class="alerta-b">Llevas ${RHR_DIAS} días seguidos con la frecuencia en reposo
+        en <b>${al.dias.map(d => d.fcReposo).join(', ')} ppm</b>, contra tu base de ${al.base}.
+        El plan marca parar cuando llega a ${al.lim} o más tres días seguidos: no estás absorbiendo la carga.</p>
+        <p class="alerta-b">Cambia hoy por descanso o caminata suave. Si sigue mañana, escríbeme
+        para ajustar la semana en vez de recuperar sesiones acumulándolas.</p>
+      </div>`;
+    }
 
     if (!s) {
       const antes = t < PLAN.startDate;
@@ -268,6 +382,8 @@
     });
     html += `</div>`;
 
+    html += cuerpoCard();
+
     html += `<h2 class="section-h">Tus ritmos</h2>
     <div class="card">
       <div class="zonas">
@@ -301,6 +417,75 @@
     document.getElementById('plan-content').innerHTML = html;
   }
 
+  // ── Render: tarjeta "Tu cuerpo" ───────────────────────────
+  /* Sparkline sobre un solo eje, escalado a min/max de la propia serie.
+     No comparte escala con las otras: son unidades distintas. */
+  function spark(vals, color, ref) {
+    const n = vals.length;
+    if (n < 2) return '';
+    const W = 240, H = 34;
+    const min = Math.min(...vals, ...(ref != null ? [ref] : []));
+    const max = Math.max(...vals, ...(ref != null ? [ref] : []));
+    const span = (max - min) || 1;
+    const x = i => (i / (n - 1)) * W;
+    const y = v => H - ((v - min) / span) * H;
+    const d = vals.map((v, i) => `${i ? 'L' : 'M'}${x(i).toFixed(1)},${y(v).toFixed(1)}`).join(' ');
+    const linRef = ref != null
+      ? `<line x1="0" y1="${y(ref).toFixed(1)}" x2="${W}" y2="${y(ref).toFixed(1)}"
+              stroke="var(--ink-muted)" stroke-width="1" stroke-dasharray="3 3" opacity=".7"/>` : '';
+    return `<svg class="spark" viewBox="0 0 ${W} ${H}" preserveAspectRatio="none" aria-hidden="true">
+      ${linRef}<path d="${d}" fill="none" stroke="${color}" stroke-width="2"
+        stroke-linejoin="round" stroke-linecap="round"/>
+      <circle cx="${x(n - 1).toFixed(1)}" cy="${y(vals[n - 1]).toFixed(1)}" r="2.8" fill="${color}"/>
+    </svg>`;
+  }
+
+  function fmtSueno(min) {
+    const h = Math.floor(min / 60), m = Math.round(min % 60);
+    return `${h} h ${String(m).padStart(2, '0')}`;
+  }
+
+  function cuerpoCard() {
+    const d = saludOrdenado();
+    if (!d.length) {
+      return `<h2 class="section-h">Tu cuerpo</h2>
+      <div class="card">
+        <p class="note" style="margin:0">Todavía no hay datos de Salud. En la pestaña
+        <b>Exportar</b> está el botón para traerlos del iPhone con un Atajo:
+        frecuencia en reposo, peso y sueño.</p>
+      </div>`;
+    }
+    const serie = k => d.filter(x => Number.isFinite(x[k])).slice(-30);
+    const fcr = serie('fcReposo'), pes = serie('peso'), sue = serie('suenoMin');
+    const base = rhrBase();
+    const ult = a => a.length ? a[a.length - 1] : null;
+
+    const fila = (titulo, arr, key, color, valTxt, sub, ref) => {
+      if (!arr.length) return '';
+      const u = ult(arr);
+      return `<div class="cuerpo-f">
+        <div class="cuerpo-h">
+          <span class="cuerpo-t">${titulo}</span>
+          <span class="cuerpo-v" style="color:${color}">${valTxt(u[key])}</span>
+        </div>
+        ${spark(arr.map(x => x[key]), color, ref)}
+        <span class="cuerpo-s">${sub} · ${arr.length} día${arr.length === 1 ? '' : 's'} · último ${fmtCorto(u.fecha)}</span>
+      </div>`;
+    };
+
+    return `<h2 class="section-h">Tu cuerpo</h2>
+    <div class="card">
+      ${fila('Frecuencia en reposo', fcr, 'fcReposo', 'var(--series-1)',
+             v => `${v} ppm`, `base ${base} · alto a partir de ${base + RHR_DELTA}`, base + RHR_DELTA)}
+      ${fila('Peso', pes, 'peso', 'var(--good)',
+             v => `${v.toFixed(1)} kg`, 'objetivo dic: 100–103 kg', 103)}
+      ${fila('Sueño', sue, 'suenoMin', 'var(--warning)',
+             v => fmtSueno(v), 'objetivo 7–8 h', 420)}
+      <p class="note">La línea punteada es el umbral. La grasa visceral y la
+      frecuencia en reposo se mueven antes que la báscula: no juzgues el plan por el peso.</p>
+    </div>`;
+  }
+
   // ── Render: EXPORTAR ──────────────────────────────────────
   function markdownRows() {
     const rows = ALL
@@ -314,6 +499,9 @@
           : `Entrenamiento: ${TIPO[s.type].label}${km ? ' ' + km : ''}`;
         const partes = [];
         if (e.timeMin) partes.push(`${e.timeMin} min`);
+        if (e.fcMedia) partes.push(`FC ${e.fcMedia} ppm`);
+        const d = salud[s.date];
+        if (d && Number.isFinite(d.fcReposo)) partes.push(`FC reposo ${d.fcReposo}`);
         if (e.rpe) partes.push(`sensación ${e.rpe}/10`);
         if (e.notes) partes.push(e.notes.replace(/\|/g, '/').replace(/\s+/g, ' ').trim());
         return `| ${s.date} (${s.dow}) | ${ev} | ${partes.join(' · ') || '—'} |`;
@@ -338,6 +526,28 @@
           <button class="btn btn-primary btn-block" id="btn-copy">Copiar filas</button>
           <button class="btn btn-ghost btn-block" id="btn-share">Compartir…</button>
         </div>
+      </div>
+
+      <div class="card">
+        <p class="eyebrow">Traer de Salud</p>
+        <p class="note" style="margin:0 0 12px">
+          Corre el Atajo <b>“Salud → Maratón”</b> en el iPhone (deja el texto en el
+          portapapeles) y toca el botón. Trae frecuencia en reposo, peso, sueño y
+          los entrenamientos del Apple Watch.
+        </p>
+        <div class="stack">
+          <button class="btn btn-primary btn-block" id="btn-salud">Importar de Salud</button>
+          <button class="btn btn-ghost btn-block" id="btn-salud-man">Pegar a mano…</button>
+        </div>
+        <div id="salud-manual" hidden style="margin-top:12px">
+          <textarea id="salud-txt" class="ta" rows="6" placeholder="FCR 2026-08-04 69&#10;PESO 2026-08-04 109.2&#10;SUENO 2026-08-04 380&#10;ENT 2026-08-04 3.2 36 142"></textarea>
+          <button class="btn btn-primary btn-block" style="margin-top:8px" id="btn-salud-proc">Procesar</button>
+        </div>
+        <p class="note" id="salud-estado" style="margin:12px 0 0">
+          ${Object.keys(salud).length
+            ? `${Object.keys(salud).length} día${Object.keys(salud).length === 1 ? '' : 's'} de datos guardados.`
+            : 'Sin datos de Salud todavía.'}
+        </p>
       </div>
 
       <div class="card">
@@ -367,8 +577,41 @@
       if (navigator.share) { try { await navigator.share({ title: 'Entrenamientos', text }); } catch (e) {} }
       else toast('Compartir no disponible en este navegador');
     };
+    function aplicarSalud(txt) {
+      if (!txt || !txt.trim()) { toast('No había nada que importar'); return; }
+      const r = parseSalud(txt);
+      if (!r.dias && !r.entrenos) {
+        toast('No reconocí ninguna línea');
+        return;
+      }
+      const p = [];
+      if (r.dias) p.push(`${r.dias} día${r.dias === 1 ? '' : 's'}`);
+      if (r.entrenos) p.push(`${r.entrenos} entrenamiento${r.entrenos === 1 ? '' : 's'}`);
+      render();
+      toast(`Importado: ${p.join(' y ')}${r.ignoradas ? ` · ${r.ignoradas} línea(s) ignorada(s)` : ''}`);
+    }
+
+    document.getElementById('btn-salud').onclick = async () => {
+      try {
+        const txt = await navigator.clipboard.readText();
+        aplicarSalud(txt);
+      } catch (e) {
+        // iOS puede negar la lectura del portapapeles: se cae al modo manual.
+        document.getElementById('salud-manual').hidden = false;
+        document.getElementById('salud-txt').focus();
+        toast('Pega el texto aquí abajo');
+      }
+    };
+    document.getElementById('btn-salud-man').onclick = () => {
+      const m = document.getElementById('salud-manual');
+      m.hidden = !m.hidden;
+      if (!m.hidden) document.getElementById('salud-txt').focus();
+    };
+    document.getElementById('btn-salud-proc').onclick = () =>
+      aplicarSalud(document.getElementById('salud-txt').value);
+
     document.getElementById('btn-backup').onclick = () => {
-      const blob = new Blob([JSON.stringify({ v: 1, exported: todayISO(), log }, null, 2)],
+      const blob = new Blob([JSON.stringify({ v: 2, exported: todayISO(), log, salud }, null, 2)],
                            { type: 'application/json' });
       const a = document.createElement('a');
       a.href = URL.createObjectURL(blob);
@@ -388,7 +631,13 @@
           const incoming = data.log || data;
           if (typeof incoming !== 'object' || Array.isArray(incoming)) throw new Error('formato');
           log = Object.assign({}, log, incoming);
-          save(); render();
+          save();
+          // v2 en adelante el respaldo también trae los datos de Salud.
+          if (data.salud && typeof data.salud === 'object' && !Array.isArray(data.salud)) {
+            salud = Object.assign({}, salud, data.salud);
+            saveSalud();
+          }
+          render();
           toast('Respaldo restaurado');
         } catch (e) { toast('Archivo no válido'); }
       };
@@ -396,8 +645,8 @@
       ev.target.value = '';
     };
     document.getElementById('btn-wipe').onclick = () => {
-      if (!confirm('¿Borrar todos los registros? Esto no se puede deshacer.')) return;
-      log = {}; save(); render(); toast('Registros borrados');
+      if (!confirm('¿Borrar todos los registros y los datos de Salud? Esto no se puede deshacer.')) return;
+      log = {}; salud = {}; save(); saveSalud(); render(); toast('Registros borrados');
     };
   }
 
