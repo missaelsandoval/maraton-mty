@@ -74,7 +74,10 @@
         nuevoS[f] = nuevoS[f] || {};
         if (tag === 'FCR') nuevoS[f].fcReposo = Math.round(v);
         else if (tag === 'PESO') nuevoS[f].peso = Math.round(v * 10) / 10;
-        else nuevoS[f].suenoMin = Math.round(v);
+        // El sueño se captura a mano (el Atajo no lo trae: ver README), así
+        // que llega en horas o en minutos según quien lo escriba. Una noche
+        // nunca son 7 minutos ni 400 horas: el rango desambigua sin preguntar.
+        else nuevoS[f].suenoMin = Math.round(v <= 24 ? v * 60 : v);
       } else if (tag === 'ENT') {
         const km = num(2), min = num(3), fc = num(4);
         if (km == null && min == null) { res.ignoradas++; return; }
@@ -532,8 +535,9 @@
         <p class="eyebrow">Traer de Salud</p>
         <p class="note" style="margin:0 0 12px">
           Corre el Atajo <b>“Salud → Maratón”</b> en el iPhone (deja el texto en el
-          portapapeles) y toca el botón. Trae frecuencia en reposo, peso, sueño y
-          los entrenamientos del Apple Watch.
+          portapapeles) y toca el botón. Trae frecuencia en reposo y peso del
+          Apple Watch. Los entrenamientos y el sueño se registran aquí a mano:
+          Atajos no sabe leerlos bien.
         </p>
         <div class="stack">
           <button class="btn btn-primary btn-block" id="btn-salud">Importar de Salud</button>

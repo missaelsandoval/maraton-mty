@@ -2,3 +2,7 @@ Thumbs.db
 desktop.ini
 .DS_Store
 *.tmp
+
+# Paso intermedio de build-shortcut.py; el .shortcut firmado sí se versiona,
+# para poder bajarlo al iPhone directo de GitHub.
+tools/dist/_sin-firmar.shortcut
