@@ -220,6 +220,62 @@ h2.section-h { font-size: 15px; font-weight: 650; margin: 20px 0 8px; }
 .cuerpo-s { display: block; font-size: 11px; color: var(--ink-muted); margin-top: 3px; }
 .spark { display: block; width: 100%; height: 34px; margin-top: 6px; overflow: visible; }
 
+/* Real vs objetivo en la fila del día */
+.day-vs {
+  display: block; font-size: 11.5px; margin-top: 3px; font-weight: 650;
+  font-variant-numeric: tabular-nums; color: var(--ink-muted);
+}
+.day-vs.es-dentro { color: var(--good); }
+.day-vs.es-rapido { color: var(--warning); }
+.day-vs.es-lento  { color: var(--ink-muted); }
+.day-plan {
+  display: block; font-size: 10.5px; font-weight: 500; color: var(--ink-muted);
+  margin-top: 1px; white-space: nowrap;
+}
+.chip-f.is-ok { background: var(--good); color: #fff; }
+
+/* Ritmo en vivo dentro de la hoja de captura */
+.ritmo-box {
+  display: flex; justify-content: space-between; align-items: baseline; gap: 10px;
+  flex-wrap: wrap; margin: 0 0 14px; padding: 10px 12px; border-radius: 10px;
+  background: var(--surface-2); border: 1px solid var(--grid);
+}
+.ritmo-real { font-size: 15px; font-weight: 700; font-variant-numeric: tabular-nums; }
+.ritmo-vs { font-size: 12px; font-weight: 650; color: var(--ink-muted); text-align: right; }
+.ritmo-vs.es-dentro { color: var(--good); }
+.ritmo-vs.es-rapido { color: var(--warning); }
+
+/* Bloque de fuerza */
+.fza-t {
+  margin: 4px 0 10px; font-size: 12px; font-weight: 700;
+  letter-spacing: .05em; text-transform: uppercase; color: var(--ink-muted);
+}
+.fza-ej { padding: 11px 0; border-top: 1px solid var(--grid); }
+.fza-ej:first-child { border-top: none; padding-top: 0; }
+.fza-h { display: flex; justify-content: space-between; align-items: baseline; gap: 10px; }
+.fza-n { font-size: 14px; font-weight: 650; }
+.fza-o { font-size: 12px; color: var(--ink-muted); font-variant-numeric: tabular-nums; white-space: nowrap; }
+.fza-nota { display: block; font-size: 11.5px; color: var(--ink-muted); margin-top: 2px; font-style: italic; }
+.fza-in { display: flex; gap: 8px; margin-top: 7px; }
+.fza-c { flex: 1; min-width: 0; display: block; }
+.fza-c span {
+  display: block; font-size: 11px; color: var(--ink-muted); margin-bottom: 3px;
+}
+.fza-c input {
+  width: 100%; box-sizing: border-box; font: 650 15px/1.2 var(--font);
+  padding: 9px 10px; border-radius: 9px; text-align: center;
+  border: 1px solid var(--grid); background: var(--surface-1); color: var(--ink-1);
+  font-variant-numeric: tabular-nums;
+}
+.fza-c input:focus { outline: 2px solid var(--series-1); outline-offset: -1px; }
+.fza-prev { display: block; font-size: 11px; color: var(--ink-muted); margin-top: 5px; }
+.fza-delta {
+  font-size: 12px; font-weight: 700; margin-left: 6px; padding: 1px 5px;
+  border-radius: 4px; vertical-align: 1px;
+}
+.fza-delta.sube { background: var(--good); color: #fff; }
+.fza-delta.baja { background: var(--grid); color: var(--ink-muted); }
+
 .ta {
   width: 100%; box-sizing: border-box; font: 500 13px/1.5 ui-monospace, Menlo, monospace;
   padding: 10px 12px; border-radius: 10px; resize: vertical;

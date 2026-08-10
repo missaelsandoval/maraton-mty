@@ -85,12 +85,29 @@
         <span>Tiempo (min)</span>
         <input type="number" id="f-time" inputmode="numeric" step="1" min="0" placeholder="0">
       </label>
+      <label class="field">
+        <span>FC media</span>
+        <input type="number" id="f-fc" inputmode="numeric" step="1" min="0" max="240" placeholder="ppm">
+      </label>
+    </div>
+
+    <!-- Ritmo real contra el rango objetivo de esta sesión. Se recalcula al
+         teclear: el veredicto llega antes de guardar, no después. -->
+    <div class="ritmo-box" id="ritmo-box" hidden>
+      <span class="ritmo-real" id="ritmo-real">—</span>
+      <span class="ritmo-vs" id="ritmo-vs"></span>
     </div>
 
     <label class="field">
       <span>Sensación · <b id="rpe-val">5</b>/10 <em id="rpe-word">normal</em></span>
       <input type="range" id="f-rpe" min="1" max="10" step="1" value="5">
     </label>
+
+    <!-- Fuerza: solo aparece en los días que la traen. -->
+    <div id="fza-bloque" hidden>
+      <p class="fza-t" id="fza-titulo"></p>
+      <div id="fza-lista"></div>
+    </div>
 
     <label class="field">
       <span>Notas</span>

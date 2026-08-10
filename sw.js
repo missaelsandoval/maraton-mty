@@ -8,7 +8,7 @@
    'reload'. Sin eso, fetch() dentro del worker pasa por la cache HTTP del
    navegador y termina guardando un index.html rancio — que a su vez pide
    archivos que no están en la cache, y la app abre en blanco sin señal. */
-const CACHE = 'mmty-v7';
+const CACHE = 'mmty-v8';
 const NET_TIMEOUT = 3500;
 
 const ASSETS = [

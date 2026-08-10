@@ -21,30 +21,35 @@ const PLAN = {
    "zona": "Recuperación",
    "minkm": "11:00–12:00",
    "kmh": "5.0–5.5",
+   "mph": "3.1–3.4",
    "sensacion": "Conversación completa, casi caminata"
   },
   {
    "zona": "Fácil",
    "minkm": "10:15–11:00",
    "kmh": "5.5–5.9",
+   "mph": "3.4–3.6",
    "sensacion": "Puedes hablar en frases completas"
   },
   {
    "zona": "Ritmo maratón",
    "minkm": "8:45–9:00",
    "kmh": "6.7–6.9",
+   "mph": "4.1–4.3",
    "sensacion": "Cómodo pero con atención"
   },
   {
    "zona": "Umbral / tempo",
    "minkm": "8:00–8:20",
    "kmh": "7.2–7.5",
+   "mph": "4.5–4.7",
    "sensacion": "Frases de 3–4 palabras"
   },
   {
    "zona": "Intervalos",
    "minkm": "7:15–7:45",
    "kmh": "7.7–8.3",
+   "mph": "4.8–5.1",
    "sensacion": "Solo palabras sueltas"
   }
  ],

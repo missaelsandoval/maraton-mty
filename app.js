@@ -5,6 +5,7 @@
 
   const LOG_KEY = 'mmty-log-v1';
   const SALUD_KEY = 'mmty-salud-v1';
+  const FZA_KEY = 'mmty-fuerza-v1';
 
   // Regla de alto del plan: FC en reposo 7+ ppm arriba de la base, 3 días
   // seguidos = no estás absorbiendo la carga.
@@ -24,9 +25,31 @@
   const RPE = ['', 'muy suave', 'suave', 'cómodo', 'ligero', 'normal',
                'algo duro', 'duro', 'muy duro', 'al límite', 'máximo'];
 
+  /* Las dos rutinas. Las dos elevaciones de talón son intencionales, no
+     redundantes: sentado aísla el sóleo, de pie carga el gastrocnemio, y el
+     sóleo es el punto débil identificado. El orden es el de ejecución. */
+  const FUERZA = {
+    A: { titulo: 'Fuerza A · cadena posterior y unilateral', ejercicios: [
+      { id: 'pmr',  n: 'Peso muerto rumano',        obj: '3 × 8' },
+      { id: 'zb',   n: 'Zancada búlgara',           obj: '3 × 8 por pierna' },
+      { id: 'pg1',  n: 'Puente de glúteo a 1 pierna', obj: '3 × 10 por lado' },
+      { id: 'tal_s',n: 'Elevación de talón sentado', obj: '3 × 15', nota: 'rodilla flexionada → sóleo' },
+      { id: 'plat', n: 'Plancha lateral',           obj: '3 × 30 s por lado', sinPeso: true },
+    ]},
+    B: { titulo: 'Fuerza B · fuerza general y estabilidad', ejercicios: [
+      { id: 'sg',   n: 'Sentadilla goblet',         obj: '3 × 10' },
+      { id: 'su',   n: 'Step-up con mancuernas',    obj: '3 × 10 por pierna' },
+      { id: 'tal_p',n: 'Elevación de talón de pie', obj: '3 × 15', nota: 'rodilla extendida → gastrocnemio' },
+      { id: 'pp',   n: 'Pallof press',              obj: '3 × 10 por lado' },
+      { id: 'pfr',  n: 'Plancha frontal',           obj: '3 × 45 s', sinPeso: true },
+      { id: 'bd',   n: 'Bird-dog',                  obj: '2 × 10 por lado', sinPeso: true },
+    ]},
+  };
+
   // ── Estado ────────────────────────────────────────────────
   let log = load();
   let salud = loadSalud();
+  let fuerza = loadFza();
   let view = 'hoy';
   let weekIdx = 0;
   let editingId = null;
@@ -46,6 +69,33 @@
   function saveSalud() {
     try { localStorage.setItem(SALUD_KEY, JSON.stringify(salud)); }
     catch (e) { toast('No se pudo guardar Salud.'); }
+  }
+  function loadFza() {
+    try { return JSON.parse(localStorage.getItem(FZA_KEY)) || {}; }
+    catch (e) { return {}; }
+  }
+  function saveFza() {
+    try { localStorage.setItem(FZA_KEY, JSON.stringify(fuerza)); }
+    catch (e) { toast('No se pudo guardar la fuerza.'); }
+  }
+
+  /* Último peso registrado de un ejercicio, mirando hacia atrás desde una
+     fecha. Es lo que convierte el registro en progresión: sin el dato previo
+     enfrente, "subir carga cada 2 semanas" no se puede ejecutar. */
+  function ultimaCarga(ejId, antesDe) {
+    const fechas = Object.keys(fuerza).filter(f => !antesDe || f < antesDe).sort();
+    for (let i = fechas.length - 1; i >= 0; i--) {
+      const s = fuerza[fechas[i]];
+      if (s && s[ejId] && Number.isFinite(s[ejId].kg)) {
+        return { kg: s[ejId].kg, reps: s[ejId].reps, fecha: fechas[i] };
+      }
+    }
+    return null;
+  }
+  function fuerzaDe(fecha) { return fuerza[fecha] || {}; }
+  function tieneFuerza(fecha) {
+    const s = fuerza[fecha];
+    return !!(s && Object.keys(s).length);
   }
 
   // ── Importación desde Salud (vía Atajos) ──────────────────
@@ -114,15 +164,83 @@
     return res;
   }
 
+  // ── Ritmos: parseo, unidades y comparación real vs objetivo ──
+  /* Las cadenas de plan.js vienen como "10:15–11:00/km · 3.4–3.6 mph" o
+     "prom 8:47–9:15/km · 4.0–4.2 mph". De ahí sale el rango objetivo en
+     segundos por km, y el km/h se calcula (no se guarda): una unidad menos
+     que mantener sincronizada a mano. */
+  function msSeg(txt) {                       // "10:15" -> 615
+    const m = /^(\d{1,2}):(\d{2})$/.exec(String(txt).trim());
+    return m ? Number(m[1]) * 60 + Number(m[2]) : null;
+  }
+  function segMs(seg) {                       // 615 -> "10:15"
+    const s = Math.round(seg);
+    return `${Math.floor(s / 60)}:${String(s % 60).padStart(2, '0')}`;
+  }
+  function rangoObjetivo(pace) {
+    if (!pace) return null;
+    const m = /(\d{1,2}:\d{2})\s*[–-]\s*(\d{1,2}:\d{2})\s*\/km/.exec(pace);
+    if (!m) return null;
+    const a = msSeg(m[1]), b = msSeg(m[2]);
+    if (a == null || b == null) return null;
+    return { rapido: Math.min(a, b), lento: Math.max(a, b) };
+  }
+  function kmhDe(seg) { return 3600 / seg; }  // seg/km -> km/h
+  function kmhTxt(pace) {
+    const r = rangoObjetivo(pace);
+    if (!r) return '';
+    const lo = kmhDe(r.lento), hi = kmhDe(r.rapido);
+    return `${lo.toFixed(1)}–${hi.toFixed(1)} km/h`;
+  }
+  /* La cadena completa que se muestra: min/km, mph y km/h.
+     El km/h es el que usa la caminadora; tenerlo evita convertir de cabeza. */
+  function paceCompleto(pace) {
+    const k = kmhTxt(pace);
+    return k ? `${pace} · ${k}` : pace;
+  }
+  function ritmoReal(e) {                     // seg/km a partir del registro
+    if (!e || !e.km || !e.timeMin) return null;
+    const km = Number(e.km), min = Number(e.timeMin);
+    if (!(km > 0) || !(min > 0)) return null;
+    return (min * 60) / km;
+  }
+  /* Veredicto real vs objetivo. El plan es explícito: pasarse cuenta como
+     fallar igual que quedarse corto, y en zona fácil más lento es mejor. */
+  function vsObjetivo(s, e) {
+    const r = rangoObjetivo(s.pace), real = ritmoReal(e);
+    if (!r || real == null) return null;
+    if (real < r.rapido) {
+      return { estado: 'rapido', delta: Math.round(r.rapido - real),
+               txt: `${Math.round(r.rapido - real)} s/km más rápido que el objetivo` };
+    }
+    if (real > r.lento) {
+      return { estado: 'lento', delta: Math.round(real - r.lento),
+               txt: `${Math.round(real - r.lento)} s/km más lento que el objetivo` };
+    }
+    return { estado: 'dentro', delta: 0, txt: 'dentro de la zona' };
+  }
+
   // ── Regla de FC en reposo ─────────────────────────────────
   function saludOrdenado() {
     return Object.keys(salud).sort().map(f => Object.assign({ fecha: f }, salud[f]));
   }
+  /* Base adaptativa. Arranca en la referencia del plan (69) y a los 7 días
+     pasa a la mediana de los últimos 28. Siete y no catorce porque al volver
+     de un parón la FC en reposo está alta de forma sostenida —78 al cerrar la
+     S1— y con base 69 la alerta se queda encendida: deja de significar algo.
+     La mediana aguanta días sueltos altos sin desplazarse. */
   function rhrBase() {
-    const v = saludOrdenado().map(d => d.fcReposo).filter(Number.isFinite);
-    if (v.length < 14) return RHR_BASE_DEFAULT;      // sin datos suficientes, la del plan
+    const v = saludOrdenado().map(d => d.fcReposo).filter(Number.isFinite).slice(-28);
+    if (v.length < 7) return RHR_BASE_DEFAULT;
     const s = v.slice().sort((a, b) => a - b);
-    return Math.round(s[Math.floor(s.length / 2)]);  // mediana: aguanta días sueltos altos
+    return Math.round(s[Math.floor(s.length / 2)]);
+  }
+  /* Señal crónica, distinta de la aguda: que la base misma se haya instalado
+     muy por encima de la referencia del plan no dispara la regla de 3 días,
+     pero dice que el punto de partida cambió. */
+  function rhrCronica() {
+    const base = rhrBase();
+    return base >= RHR_BASE_DEFAULT + 5 ? { base, ref: RHR_BASE_DEFAULT } : null;
   }
   function alertaRHR() {
     const base = rhrBase(), lim = base + RHR_DELTA;
@@ -225,7 +343,7 @@
         <p class="hero-desc">${esc(s.desc)}</p>
         ${s.pace ? `<div class="pace-box">
           <span class="pace-l">Ritmo objetivo</span>
-          <span class="pace-v">${esc(s.pace)}</span>
+          <span class="pace-v">${esc(paceCompleto(s.pace))}</span>
         </div>` : ''}
         ${s.fuerza ? `<div class="pace-box pace-alt">
           <span class="pace-l">Además hoy</span>
@@ -295,9 +413,15 @@
     const e = log[s.id];
     const rest = s.type === 'descanso' || s.type === 'cruzado';
     const d = parseISO(s.date);
+    // Real cuando existe, plan cuando no — y se marca cuál es cuál.
     const kmTxt = done && e && e.km
       ? `${fmtKm(e.km)} km`
       : (s.km > 0 ? `${fmtKm(s.km)} km` : '—');
+    const planTxt = done && e && e.km && Math.abs(e.km - s.km) > 0.05
+      ? `<span class="day-plan">plan ${fmtKm(s.km)}</span>` : '';
+    const v = done ? vsObjetivo(s, e) : null;
+    const real = done ? ritmoReal(e) : null;
+    const fz = tieneFuerza(s.date);
     return `<button class="day ${isToday ? 'is-today' : ''} ${rest ? 'is-rest' : ''}" data-log="${s.id}">
       <span class="day-bar" style="background:${cfg.color}"></span>
       <span class="day-date">
@@ -305,11 +429,15 @@
         <span class="day-num">${d.getDate()}</span>
       </span>
       <span class="day-body">
-        <span class="day-type">${cfg.label}${s.fuerza ? `<span class="chip-f">Fuerza ${s.fuerza}</span>` : ''}</span>
+        <span class="day-type">${cfg.label}${s.fuerza
+          ? `<span class="chip-f ${fz ? 'is-ok' : ''}">Fuerza ${s.fuerza}${fz ? ' ✓' : ''}</span>` : ''}</span>
         <span class="day-desc">${esc(s.desc)}</span>
-        ${s.pace ? `<span class="day-pace">${esc(s.pace)}</span>` : ''}
+        ${s.pace ? `<span class="day-pace">${esc(paceCompleto(s.pace))}</span>` : ''}
+        ${real != null ? `<span class="day-vs ${v ? 'es-' + v.estado : ''}">
+          ${segMs(real)}/km${e.fcMedia ? ` · ${e.fcMedia} ppm` : ''}${v ? ` — ${esc(v.txt)}` : ''}
+        </span>` : ''}
       </span>
-      <span class="day-km">${kmTxt}</span>
+      <span class="day-km">${kmTxt}${planTxt}</span>
       <span class="day-check ${done ? 'is-done' : ''}">✓</span>
     </button>`;
   }
@@ -393,7 +521,7 @@
         ${PLAN.zonas.map(z => `<div class="zona">
           <span class="zona-n">${esc(z.zona)}</span>
           <span class="zona-p">${esc(z.minkm)}<small>/km</small></span>
-          <span class="zona-k">${esc(z.kmh)} km/h</span>
+          <span class="zona-k">${esc(z.kmh)} km/h${z.mph ? ` · ${esc(z.mph)} mph` : ''}</span>
           <span class="zona-s">${esc(z.sensacion)}</span>
         </div>`).join('')}
       </div>
@@ -451,16 +579,19 @@
   function cuerpoCard() {
     const d = saludOrdenado();
     if (!d.length) {
+      // Ojo: la fuerza se dibuja aparte y no depende de que haya datos de
+      // Salud. Sin este append, capturar cargas no mostraba nada.
       return `<h2 class="section-h">Tu cuerpo</h2>
       <div class="card">
         <p class="note" style="margin:0">Todavía no hay datos de Salud. En la pestaña
         <b>Exportar</b> está el botón para traerlos del iPhone con un Atajo:
         frecuencia en reposo, peso y sueño.</p>
-      </div>`;
+      </div>` + fuerzaCard();
     }
     const serie = k => d.filter(x => Number.isFinite(x[k])).slice(-30);
     const fcr = serie('fcReposo'), pes = serie('peso'), sue = serie('suenoMin');
     const base = rhrBase();
+    const cron = rhrCronica();
     const ult = a => a.length ? a[a.length - 1] : null;
 
     const fila = (titulo, arr, key, color, valTxt, sub, ref) => {
@@ -486,6 +617,57 @@
              v => fmtSueno(v), 'objetivo 7–8 h', 420)}
       <p class="note">La línea punteada es el umbral. La grasa visceral y la
       frecuencia en reposo se mueven antes que la báscula: no juzgues el plan por el peso.</p>
+      ${cron ? `<p class="note note-warn">Tu base de frecuencia en reposo se
+      instaló en <b>${cron.base} ppm</b>, contra los ${cron.ref} de referencia del plan.
+      Eso no es fatiga de esta semana: es el punto de partida que dejó el parón.
+      Se recupera con volumen fácil y sueño, no con sesiones duras.</p>` : ''}
+    </div>` + fuerzaCard();
+  }
+
+  /* Historial de cargas. Sin esto, "subir carga cada 2 semanas" es una
+     instrucción que no se puede ejecutar: no hay contra qué subir. */
+  function fuerzaCard() {
+    const fechas = Object.keys(fuerza).sort();
+    if (!fechas.length) {
+      return `<h2 class="section-h">Fuerza</h2>
+      <div class="card"><p class="note" style="margin:0">Todavía no hay pesos
+      registrados. Se capturan al abrir un día con Fuerza A o B. La progresión
+      de carga arranca en la <b>semana 5</b>; para entonces conviene tener con
+      qué comparar.</p></div>`;
+    }
+    const todos = [];
+    Object.keys(FUERZA).forEach(k => FUERZA[k].ejercicios.forEach(ej => {
+      if (ej.sinPeso) return;
+      const serie = fechas
+        .filter(f => fuerza[f][ej.id] && Number.isFinite(fuerza[f][ej.id].kg))
+        .map(f => ({ fecha: f, kg: fuerza[f][ej.id].kg, reps: fuerza[f][ej.id].reps }));
+      if (serie.length) todos.push({ ej, serie });
+    }));
+    if (!todos.length) {
+      return `<h2 class="section-h">Fuerza</h2>
+      <div class="card"><p class="note" style="margin:0">Hay sesiones marcadas
+      pero sin peso capturado.</p></div>`;
+    }
+    return `<h2 class="section-h">Fuerza</h2>
+    <div class="card">
+      ${todos.map(({ ej, serie }) => {
+        const u = serie[serie.length - 1];
+        const p = serie.length > 1 ? serie[serie.length - 2] : null;
+        const d = p ? u.kg - p.kg : 0;
+        return `<div class="cuerpo-f">
+          <div class="cuerpo-h">
+            <span class="cuerpo-t">${esc(ej.n)}</span>
+            <span class="cuerpo-v" style="color:var(--good)">${u.kg} kg${
+              d ? `<span class="fza-delta ${d > 0 ? 'sube' : 'baja'}">${d > 0 ? '+' : ''}${d.toFixed(1)}</span>` : ''}</span>
+          </div>
+          ${serie.length > 1 ? spark(serie.map(x => x.kg), 'var(--good)', null) : ''}
+          <span class="cuerpo-s">${pl(serie.length, 'sesión', 'sesiones')} ·
+            última ${fmtCorto(u.fecha)}${u.reps ? ` · ${u.reps} reps` : ''} · objetivo ${esc(ej.obj)}</span>
+        </div>`;
+      }).join('')}
+      <p class="note">S1–S4 es técnica y carga ligera. <b>La progresión empieza
+      en S5</b>: subir carga cada 2 semanas, con la última repetición exigente
+      pero limpia. De S11 a S16 se mantiene carga y se baja a 2 series.</p>
     </div>`;
   }
 
@@ -502,10 +684,24 @@
           : `Entrenamiento: ${TIPO[s.type].label}${km ? ' ' + km : ''}`;
         const partes = [];
         if (e.timeMin) partes.push(`${e.timeMin} min`);
+        const r = ritmoReal(e);
+        if (r != null) {
+          const v = vsObjetivo(s, e);
+          partes.push(`${segMs(r)}/km${v && v.estado !== 'dentro' ? ` (${v.txt})` : ''}`);
+        }
         if (e.fcMedia) partes.push(`FC ${e.fcMedia} ppm`);
         const d = salud[s.date];
         if (d && Number.isFinite(d.fcReposo)) partes.push(`FC reposo ${d.fcReposo}`);
         if (e.rpe) partes.push(`sensación ${e.rpe}/10`);
+        const fz = fuerza[s.date];
+        if (fz) {
+          const det = Object.keys(fz).map(id => {
+            const ej = (FUERZA.A.ejercicios.concat(FUERZA.B.ejercicios)).find(x => x.id === id);
+            const v = fz[id];
+            return ej && Number.isFinite(v.kg) ? `${ej.n} ${v.kg} kg${v.reps ? `×${v.reps}` : ''}` : null;
+          }).filter(Boolean);
+          if (det.length) partes.push(`Fuerza: ${det.join(', ')}`);
+        }
         if (e.notes) partes.push(e.notes.replace(/\|/g, '/').replace(/\s+/g, ' ').trim());
         return `| ${s.date} (${s.dow}) | ${ev} | ${partes.join(' · ') || '—'} |`;
       });
@@ -521,7 +717,7 @@
       <div class="card">
         <p class="eyebrow">Filas para registro-salud.md</p>
         <p class="note" style="margin:0 0 12px">
-          ${rows.length} sesión${rows.length === 1 ? '' : 'es'} registrada${rows.length === 1 ? '' : 's'} ·
+          ${pl(rows.length, 'sesión registrada', 'sesiones registradas')} ·
           ${fmtKm(T.done)} km. Copia y pégalas en Claude Code para que actualice la bitácora.
         </p>
         <pre class="code" id="md-out">${esc(md)}</pre>
@@ -615,7 +811,7 @@
       aplicarSalud(document.getElementById('salud-txt').value);
 
     document.getElementById('btn-backup').onclick = () => {
-      const blob = new Blob([JSON.stringify({ v: 2, exported: todayISO(), log, salud }, null, 2)],
+      const blob = new Blob([JSON.stringify({ v: 3, exported: todayISO(), log, salud, fuerza }, null, 2)],
                            { type: 'application/json' });
       const a = document.createElement('a');
       a.href = URL.createObjectURL(blob);
@@ -641,6 +837,11 @@
             salud = Object.assign({}, salud, data.salud);
             saveSalud();
           }
+          // v3 en adelante trae también las cargas de fuerza.
+          if (data.fuerza && typeof data.fuerza === 'object' && !Array.isArray(data.fuerza)) {
+            fuerza = Object.assign({}, fuerza, data.fuerza);
+            saveFza();
+          }
           render();
           toast('Respaldo restaurado');
         } catch (e) { toast('Archivo no válido'); }
@@ -649,8 +850,9 @@
       ev.target.value = '';
     };
     document.getElementById('btn-wipe').onclick = () => {
-      if (!confirm('¿Borrar todos los registros y los datos de Salud? Esto no se puede deshacer.')) return;
-      log = {}; salud = {}; save(); saveSalud(); render(); toast('Registros borrados');
+      if (!confirm('¿Borrar registros, datos de Salud y cargas de fuerza? Esto no se puede deshacer.')) return;
+      log = {}; salud = {}; fuerza = {};
+      save(); saveSalud(); saveFza(); render(); toast('Registros borrados');
     };
   }
 
@@ -674,6 +876,7 @@
     sd.hidden = false;
     document.getElementById('f-km').value = e.km != null ? e.km : (rest ? '' : s.km);
     document.getElementById('f-time').value = e.timeMin != null ? e.timeMin : '';
+    document.getElementById('f-fc').value = e.fcMedia != null ? e.fcMedia : '';
     document.getElementById('f-rpe').value = e.rpe != null ? e.rpe : 5;
     document.getElementById('f-notes').value = e.notes || '';
     document.getElementById('sheet-delete').hidden = !isDone(id);
@@ -681,6 +884,10 @@
 
     // Los campos de distancia no aplican a descanso / cruzado
     document.querySelector('.field-row').style.display = rest ? 'none' : 'flex';
+
+    sheetSesion = s;
+    syncRitmo();
+    pintarFuerza(s);
 
     backdrop.hidden = false; sheet.hidden = false;
     document.body.style.overflow = 'hidden';
@@ -695,7 +902,87 @@
     document.getElementById('rpe-word').textContent = RPE[v];
   }
 
+  let sheetSesion = null;
+
+  function syncRitmo() {
+    const box = document.getElementById('ritmo-box');
+    const s = sheetSesion;
+    if (!s || !s.pace) { box.hidden = true; return; }
+    const prov = {
+      km: parseFloat(document.getElementById('f-km').value),
+      timeMin: parseInt(document.getElementById('f-time').value, 10),
+    };
+    const real = ritmoReal(prov);
+    if (real == null) {
+      box.hidden = false;
+      document.getElementById('ritmo-real').textContent = 'Ritmo: pon km y minutos';
+      document.getElementById('ritmo-vs').textContent = '';
+      document.getElementById('ritmo-vs').className = 'ritmo-vs';
+      return;
+    }
+    const v = vsObjetivo(s, prov);
+    box.hidden = false;
+    document.getElementById('ritmo-real').textContent =
+      `${segMs(real)}/km · ${kmhDe(real).toFixed(1)} km/h`;
+    const el = document.getElementById('ritmo-vs');
+    el.textContent = v ? v.txt : '';
+    el.className = 'ritmo-vs' + (v ? ' es-' + v.estado : '');
+  }
+
+  function pintarFuerza(s) {
+    const bloque = document.getElementById('fza-bloque');
+    if (!s.fuerza || !FUERZA[s.fuerza]) { bloque.hidden = true; return; }
+    const rut = FUERZA[s.fuerza];
+    const hoy = fuerzaDe(s.date);
+    document.getElementById('fza-titulo').textContent = rut.titulo;
+    document.getElementById('fza-lista').innerHTML = rut.ejercicios.map(ej => {
+      const y = hoy[ej.id] || {};
+      const prev = ultimaCarga(ej.id, s.date);
+      const ref = prev
+        ? `última: ${prev.kg} kg${prev.reps ? ` × ${prev.reps}` : ''} · ${fmtCorto(prev.fecha)}`
+        : 'sin registro previo';
+      return `<div class="fza-ej">
+        <div class="fza-h">
+          <span class="fza-n">${esc(ej.n)}</span>
+          <span class="fza-o">${esc(ej.obj)}</span>
+        </div>
+        ${ej.nota ? `<span class="fza-nota">${esc(ej.nota)}</span>` : ''}
+        <div class="fza-in">
+          ${ej.sinPeso
+            ? `<label class="fza-c"><span>Series hechas</span>
+                 <input type="number" inputmode="numeric" min="0" step="1"
+                        data-fza="${ej.id}" data-campo="reps" value="${y.reps != null ? y.reps : ''}" placeholder="0"></label>`
+            : `<label class="fza-c"><span>Peso (kg)</span>
+                 <input type="number" inputmode="decimal" min="0" step="0.5"
+                        data-fza="${ej.id}" data-campo="kg" value="${y.kg != null ? y.kg : ''}"
+                        placeholder="${prev ? prev.kg : '0'}"></label>
+               <label class="fza-c"><span>Reps logradas</span>
+                 <input type="number" inputmode="numeric" min="0" step="1"
+                        data-fza="${ej.id}" data-campo="reps" value="${y.reps != null ? y.reps : ''}" placeholder="0"></label>`}
+        </div>
+        <span class="fza-prev">${esc(ref)}</span>
+      </div>`;
+    }).join('');
+    bloque.hidden = false;
+  }
+
+  function recogerFuerza(fecha) {
+    const datos = {};
+    document.querySelectorAll('#fza-lista [data-fza]').forEach(inp => {
+      const v = parseFloat(inp.value);
+      if (!isFinite(v)) return;
+      const id = inp.dataset.fza;
+      datos[id] = datos[id] || {};
+      datos[id][inp.dataset.campo] = v;
+    });
+    if (Object.keys(datos).length) { fuerza[fecha] = datos; }
+    else { delete fuerza[fecha]; }
+    saveFza();
+  }
+
   document.getElementById('f-rpe').addEventListener('input', syncRpe);
+  document.getElementById('f-km').addEventListener('input', syncRitmo);
+  document.getElementById('f-time').addEventListener('input', syncRitmo);
   document.getElementById('sheet-cancel').onclick = closeSheet;
   backdrop.onclick = closeSheet;
   document.getElementById('sheet-delete').onclick = () => {
@@ -707,14 +994,18 @@
     if (!editingId) return;
     const km = parseFloat(document.getElementById('f-km').value);
     const tm = parseInt(document.getElementById('f-time').value, 10);
+    const fc = parseInt(document.getElementById('f-fc').value, 10);
+    const s = ALL.find(x => x.id === editingId);
     log[editingId] = {
       done: true,
       km: isNaN(km) ? 0 : km,
       timeMin: isNaN(tm) ? null : tm,
+      fcMedia: isNaN(fc) ? null : fc,
       rpe: Number(document.getElementById('f-rpe').value),
       notes: document.getElementById('f-notes').value.trim(),
       loggedAt: new Date().toISOString(),
     };
+    if (s) recogerFuerza(s.date);
     save(); closeSheet(); render(); toast('Guardado ✓');
   });
 
@@ -745,6 +1036,8 @@
     const v = Number(n) || 0;
     return Number.isInteger(v) ? String(v) : v.toFixed(1);
   }
+  // "sesión" → "sesiones", no "sesiónes": el plural pierde el acento.
+  function pl(n, sing, plur) { return `${n} ${n === 1 ? sing : plur}`; }
   function esc(s) {
     return String(s).replace(/[&<>"]/g, c =>
       ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
