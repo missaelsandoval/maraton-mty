@@ -174,6 +174,88 @@
     return !!(s && Object.keys(s).length);
   }
 
+  // ── Sincronización cifrada (datos.enc.json) ───────────────
+  /* El repo es público, así que el archivo va cifrado con AES-GCM y clave
+     derivada por PBKDF2. Sin la clave es ruido. La clave se teclea una vez y
+     vive en este dispositivo, igual que el resto de los datos.
+
+     Reglas de fusión, en una línea: el sensor manda sobre lo que el sensor
+     mide, y tú mandas sobre lo que solo tú sabes. Una sesión que editaste a
+     mano no se sobrescribe nunca; la sensación y las notas se conservan
+     siempre, aunque la distancia venga del reloj. */
+  const CLAVE_KEY = 'mmty-clave-v1';
+  const FEED_URL = 'datos.enc.json';
+  const FUENTES_MAQUINA = ['feed', 'Salud'];
+
+  function getClave() { try { return localStorage.getItem(CLAVE_KEY) || ''; } catch (e) { return ''; } }
+  function setClave(v) {
+    try { v ? localStorage.setItem(CLAVE_KEY, v) : localStorage.removeItem(CLAVE_KEY); }
+    catch (e) {}
+  }
+
+  function b64ab(s) {
+    const bin = atob(s), a = new Uint8Array(bin.length);
+    for (let i = 0; i < bin.length; i++) a[i] = bin.charCodeAt(i);
+    return a;
+  }
+
+  async function descifrar(sobre, clave) {
+    const enc = new TextEncoder();
+    const base = await crypto.subtle.importKey('raw', enc.encode(clave), 'PBKDF2', false, ['deriveKey']);
+    const k = await crypto.subtle.deriveKey(
+      { name: 'PBKDF2', salt: b64ab(sobre.salt), iterations: sobre.iter, hash: 'SHA-256' },
+      base, { name: 'AES-GCM', length: 256 }, false, ['decrypt']);
+    // GCM autentica: si el archivo fue alterado o la clave es otra, esto lanza.
+    const plano = await crypto.subtle.decrypt(
+      { name: 'AES-GCM', iv: b64ab(sobre.iv) }, k, b64ab(sobre.ct));
+    return JSON.parse(new TextDecoder().decode(plano));
+  }
+
+  function fusionarFeed(d) {
+    let n = 0;
+    Object.keys(d.salud || {}).forEach(f => {
+      const antes = JSON.stringify(salud[f] || null);
+      const comb = Object.assign({}, salud[f], d.salud[f]);
+      if (JSON.stringify(comb) !== antes) { salud[f] = comb; n++; }
+    });
+    Object.keys(d.log || {}).forEach(id => {
+      const prev = log[id];
+      // Lo que capturaste tú se respeta: no hay feed que le gane.
+      if (prev && !FUENTES_MAQUINA.includes(prev.fuente)) return;
+      const inc = d.log[id];
+      const comb = Object.assign({}, prev || {}, inc, {
+        fuente: 'feed',
+        rpe: (prev && prev.rpe) || inc.rpe || 5,
+        notes: (prev && prev.notes) || inc.notes || '',
+      });
+      if (JSON.stringify(comb) !== JSON.stringify(prev || null)) { log[id] = comb; n++; }
+    });
+    if (n) { saveSalud(); save(); }
+    return n;
+  }
+
+  let feedEstado = null;   // {ok, msg} para pintar en Exportar
+
+  async function sincronizar(manual) {
+    const clave = getClave();
+    if (!clave) { feedEstado = null; return 0; }
+    try {
+      const r = await fetch(FEED_URL, { cache: 'no-store' });
+      if (!r.ok) throw new Error('sin archivo');
+      const sobre = await r.json();
+      const d = await descifrar(sobre, clave);
+      const n = fusionarFeed(d);
+      feedEstado = { ok: true, msg: `Datos al ${d.generado || '—'}` };
+      if (manual) toast(n ? `Sincronizado: ${n} cambio${n === 1 ? '' : 's'}` : 'Ya estabas al día');
+      return n;
+    } catch (e) {
+      const mala = e && (e.name === 'OperationError' || e.name === 'InvalidAccessError');
+      feedEstado = { ok: false, msg: mala ? 'La clave no corresponde a este archivo' : 'No se pudo bajar el archivo' };
+      if (manual) toast(feedEstado.msg);
+      return 0;
+    }
+  }
+
   // ── Importación desde Salud (vía Atajos) ──────────────────
   /* Formato de líneas, no JSON: Atajos lo produce con un bloque de texto
      simple, y así puedes leerlo y corregirlo a ojo.
@@ -729,6 +811,10 @@
              v => `${v.toFixed(1)} kg`, 'objetivo dic: 100–103 kg', 103)}
       ${fila('Sueño', sue, 'suenoMin', 'var(--warning)',
              v => fmtSueno(v), 'objetivo 7–8 h', 420)}
+      ${fila('Variabilidad cardiaca', serie('hrv'), 'hrv', 'var(--series-2)',
+             v => `${v.toFixed(1)} ms`, 'más alto es mejor recuperación', null)}
+      ${fila('VO2 máx', serie('vo2max'), 'vo2max', 'var(--good)',
+             v => `${v.toFixed(1)}`, 'antes del parón: 33.5', 33.5)}
       <p class="note">La línea punteada es el umbral. La grasa visceral y la
       frecuencia en reposo se mueven antes que la báscula: no juzgues el plan por el peso.</p>
       ${cron ? `<p class="note note-warn">Tu base de frecuencia en reposo se
@@ -857,7 +943,29 @@
       </div>
 
       <div class="card">
-        <p class="eyebrow">Traer de Salud</p>
+        <p class="eyebrow">Sincronización automática</p>
+        <p class="note" style="margin:0 0 12px">
+          ${getClave()
+            ? 'La app baja tus datos de Salud sola al abrir, cifrados. Claude los deja listos cuando cierras la semana.'
+            : 'Pega aquí la clave <b>una sola vez</b> y la app bajará tus datos de Salud sola al abrir. Está en <b>clave-maraton-app.txt</b>, en tu iCloud Drive.'}
+        </p>
+        <input type="password" id="f-clave" class="ta" style="font-size:14px;text-align:center"
+               placeholder="XXXXX-XXXXX-XXXXX-XXXXX-XXXXX"
+               autocomplete="off" autocapitalize="characters" spellcheck="false"
+               value="${getClave() ? '' : ''}">
+        <div class="stack" style="margin-top:8px">
+          <button class="btn btn-primary btn-block" id="btn-clave">
+            ${getClave() ? 'Cambiar clave y sincronizar' : 'Guardar clave y sincronizar'}
+          </button>
+          ${getClave() ? '<button class="btn btn-ghost btn-block" id="btn-sync">Sincronizar ahora</button>' : ''}
+          ${getClave() ? '<button class="btn btn-ghost btn-block" id="btn-clave-off">Olvidar la clave</button>' : ''}
+        </div>
+        ${feedEstado ? `<p class="note ${feedEstado.ok ? '' : 'note-warn'}" style="margin:12px 0 0">
+          ${esc(feedEstado.msg)}</p>` : ''}
+      </div>
+
+      <div class="card">
+        <p class="eyebrow">Traer de Salud a mano</p>
         <p class="note" style="margin:0 0 12px">
           Corre el Atajo <b>“Salud → Maratón”</b> en el iPhone (deja el texto en el
           portapapeles) y toca el botón. Trae frecuencia en reposo y peso del
@@ -919,6 +1027,21 @@
       render();
       toast(`Importado: ${p.join(' y ')}${r.ignoradas ? ` · ${r.ignoradas} línea(s) ignorada(s)` : ''}`);
     }
+
+    document.getElementById('btn-clave').onclick = async () => {
+      const v = document.getElementById('f-clave').value.trim().toUpperCase();
+      if (!v) { toast('Pega la clave primero'); return; }
+      setClave(v);
+      await sincronizar(true);
+      render();
+    };
+    const bs = document.getElementById('btn-sync');
+    if (bs) bs.onclick = async () => { await sincronizar(true); render(); };
+    const bo = document.getElementById('btn-clave-off');
+    if (bo) bo.onclick = () => {
+      if (!confirm('¿Olvidar la clave? Los datos ya bajados se quedan; solo deja de sincronizar.')) return;
+      setClave(''); feedEstado = null; render(); toast('Clave olvidada');
+    };
 
     document.getElementById('btn-salud').onclick = async () => {
       try {
@@ -1207,6 +1330,10 @@
 
   updateCountdown();
   render();
+
+  // Sincroniza al arrancar, sin bloquear el primer pintado: si hay red y clave,
+  // los datos aparecen solos un instante después.
+  sincronizar(false).then(n => { if (n) render(); });
 
   if ('serviceWorker' in navigator) {
     window.addEventListener('load', () => {
