@@ -70,6 +70,9 @@ def main() -> int:
     iv = os.urandom(12)               # 96 bits, el tamaño que GCM espera
     ct = AESGCM(derivar(clave, salt)).encrypt(iv, plano, None)
 
+    # Nada fuera del blob salvo lo que el descifrado necesita. La fecha de
+    # generación va DENTRO: la app la lee del contenido ya descifrado, así que
+    # publicarla aquí solo regalaría cuándo entrena sin dar nada a cambio.
     sobre = {
         "v": VERSION,
         "alg": "AES-256-GCM",
@@ -78,7 +81,6 @@ def main() -> int:
         "salt": b64(salt),
         "iv": b64(iv),
         "ct": b64(ct),
-        "generado": datos.get("generado"),
     }
     with open(a.salida, "w", encoding="utf-8") as f:
         json.dump(sobre, f, indent=1)
