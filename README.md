@@ -167,6 +167,67 @@ sabe en el teléfono.
   El export los saca con FC media, si la anotaste, y con la FC en reposo de ese
   día, que sí viene del atajo.
 
+## La rutina de fuerza
+
+Desde el **15-ago-2026** la fuerza del plan es **"Ganancia de fuerza" de
+Runna, completada**: la sesión de Runna más los cinco ejercicios de las viejas
+A y B cuyo estímulo Runna no cubre con nada. Vive en `FUERZA.R` dentro de
+`app.js`; los añadidos llevan `extra: true` y salen marcados en pantalla.
+
+Trece ejercicios, 45–55 min, seis con carga.
+
+Sale la misma rutina en los 34 días de fuerza, porque de Runna se capturó una
+sola sesión (el jueves de su semana 1). `plan.js` sigue marcando los días como
+`"A"` y `"B"`; esa marca no se tocó y las dos resuelven a la misma rutina por
+`rutinaFuerza()`. Si algún día se capturan más sesiones de Runna, se agregan
+como claves nuevas y esa función las reparte.
+
+### Qué se añadió y por qué
+
+| Ejercicio | Por qué Runna no lo cubre |
+|---|---|
+| Elevación de talón **sentado** | Nada de gemelo. Rodilla flexionada → sóleo, el punto débil identificado |
+| Elevación de talón **de pie** | Rodilla extendida → gastrocnemio |
+| Peso muerto rumano | No hay bisagra de cadera con carga; el isométrico de isquiotibiales es sostén, no fuerza |
+| Sentadilla goblet | Runna trae el patrón pero solo con peso corporal: falta la carga bilateral de cuádriceps |
+| Pallof press | No hay antirrotación |
+| Bird-dog | No hay antiextensión en cuadrupedia |
+
+### Qué se dejó fuera, y no es olvido
+
+Runna ya cubre ese estímulo con otro nombre: **zancada búlgara** y **step-up**
+(estocada caminando + zancada y press), **plancha frontal** (caminata con
+flexiones + plancha lateral) y **puente de glúteo a 1 pierna** (isométrico de
+isquiotibiales).
+
+Si un día no alcanza el tiempo, se recorta el **calentamiento**, no la carga:
+lo que sostiene el plan son las elevaciones de talón, el peso muerto y la
+sentadilla.
+
+### El historial de cargas se conserva
+
+Los seis que regresaron **conservan su id original** (`sg`, `pmr`, `tal_s`,
+`tal_p`, `pp`, `bd`), así que lo que ya estaba registrado con A y B se
+reconecta solo y la progresión sigue donde iba.
+
+Los que no regresaron viven en `EJ_RETIRADOS`, que guarda sus nombres para
+que:
+
+- el **export** los siga sacando con nombre en vez de perderlos en silencio;
+- la tarjeta de **Fuerza** los siga graficando, atenuados y marcados como "de
+  una rutina que ya no está en el plan".
+
+### Los videos
+
+Cada ejercicio enlaza al tutorial de Runna (`support.runna.com`): video más
+las claves de técnica escritas. Son páginas públicas — no piden cuenta ni la
+app instalada. Los enlaces están en el campo `vid` y salen en dos lugares:
+
+- **Hoja de captura** — enlace *técnica* junto al nombre. Es el que se usa a
+  media serie, por eso lleva 12 px de padding vertical: un enlace de 11 px sin
+  área de toque no se atina con las manos sudadas.
+- **Plan → Guía de ejercicios** — el catálogo completo.
+
 ## Actualizar el plan
 
 1. Regenerar o editar `plan.js`.

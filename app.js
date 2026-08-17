@@ -25,26 +25,102 @@
   const RPE = ['', 'muy suave', 'suave', 'cómodo', 'ligero', 'normal',
                'algo duro', 'duro', 'muy duro', 'al límite', 'máximo'];
 
-  /* Las dos rutinas. Las dos elevaciones de talón son intencionales, no
-     redundantes: sentado aísla el sóleo, de pie carga el gastrocnemio, y el
-     sóleo es el punto débil identificado. El orden es el de ejecución. */
+  /* La rutina de fuerza: "Ganancia de fuerza" de Runna (15-ago-2026), más los
+     cinco ejercicios de las viejas A/B cuyo estímulo Runna no cubre con nada
+     — marcados `extra: true`.
+
+     Qué se añadió y por qué. Runna no trae NADA de gemelo, y el sóleo es el
+     punto débil identificado: vuelven las dos elevaciones de talón, sentada
+     (sóleo, rodilla flexionada) y de pie (gastrocnemio, rodilla extendida).
+     Tampoco trae bisagra de cadera con carga — el isométrico de isquiotibiales
+     es sostén, no fuerza — así que vuelve el peso muerto rumano. Y no trae
+     antirrotación ni antiextensión: vuelven Pallof press y Bird-dog.
+
+     La sentadilla goblet volvió el 15-ago-2026, después de haberla dejado
+     fuera un rato: Runna sí trae el patrón de sentadilla, pero solo con peso
+     corporal, así que la carga bilateral de cuádriceps no la cubría nadie.
+
+     Qué NO se añadió, porque Runna ya lo cubre con otro nombre: zancada
+     búlgara y step-up (los cubre estocada caminando + zancada y press),
+     plancha frontal (la cubre la caminata con flexiones + plancha lateral) y
+     puente de glúteo a 1 pierna (lo cubre el isométrico de isquiotibiales).
+
+     Los que regresan conservan su id original (`sg`, `pmr`, `tal_s`, `tal_p`,
+     `pp`, `bd`) a propósito: así el historial de cargas ya registrado se
+     reconecta solo, en vez de quedar huérfano.
+
+     Sale la MISMA rutina los 34 días de fuerza, porque de Runna solo se
+     capturó una sesión. plan.js sigue marcando los días como "A" y "B": esa
+     marca se respeta y ambas resuelven aquí, así el plan no se toca.
+
+     `vid` apunta al tutorial de Runna: video más claves de técnica escritas,
+     en páginas públicas que no piden cuenta. El orden es el de ejecución. */
   const FUERZA = {
-    A: { titulo: 'Fuerza A · cadena posterior y unilateral', ejercicios: [
-      { id: 'pmr',  n: 'Peso muerto rumano',        obj: '3 × 8' },
-      { id: 'zb',   n: 'Zancada búlgara',           obj: '3 × 8 por pierna' },
-      { id: 'pg1',  n: 'Puente de glúteo a 1 pierna', obj: '3 × 10 por lado' },
-      { id: 'tal_s',n: 'Elevación de talón sentado', obj: '3 × 15', nota: 'rodilla flexionada → sóleo' },
-      { id: 'plat', n: 'Plancha lateral',           obj: '3 × 30 s por lado', sinPeso: true },
-    ]},
-    B: { titulo: 'Fuerza B · fuerza general y estabilidad', ejercicios: [
-      { id: 'sg',   n: 'Sentadilla goblet',         obj: '3 × 10' },
-      { id: 'su',   n: 'Step-up con mancuernas',    obj: '3 × 10 por pierna' },
-      { id: 'tal_p',n: 'Elevación de talón de pie', obj: '3 × 15', nota: 'rodilla extendida → gastrocnemio' },
-      { id: 'pp',   n: 'Pallof press',              obj: '3 × 10 por lado' },
-      { id: 'pfr',  n: 'Plancha frontal',           obj: '3 × 45 s', sinPeso: true },
-      { id: 'bd',   n: 'Bird-dog',                  obj: '2 × 10 por lado', sinPeso: true },
-    ]},
+    R: {
+      titulo: 'Fuerza · Runna, completada',
+      meta: '45–55 min · mancuerna',
+      ejercicios: [
+        { id: 'r_sent', n: 'Sentadilla con peso corporal', obj: '2 × 30 s', sinPeso: true,
+          nota: 'calentamiento · 2 series, 1 min de descanso',
+          vid: 'https://support.runna.com/en/articles/6376116-bodyweight-squat-exercise-tutorial' },
+        { id: 'r_camf', n: 'Caminata con flexiones desplazadas', obj: '2 × 30 s', sinPeso: true,
+          nota: 'calentamiento',
+          vid: 'https://support.runna.com/en/articles/6321878-travelling-press-up-walk-out-exercise-tutorial' },
+        { id: 'r_estc', n: 'Estocada caminando', obj: '2 × 30 s', sinPeso: true,
+          nota: 'calentamiento',
+          vid: 'https://support.runna.com/en/articles/6321369-walking-lunge-exercise-tutorial' },
+        { id: 'r_toqd', n: 'Toque diagonal con la punta del pie', obj: '2 × 30 s por lado', sinPeso: true,
+          nota: 'calentamiento',
+          vid: 'https://support.runna.com/en/articles/6376752-diagonal-toe-tap-exercise-tutorial' },
+        { id: 'sg',    n: 'Sentadilla goblet', obj: '3 × 10', extra: true,
+          nota: 'Runna solo trae la sentadilla sin carga',
+          vid: 'https://support.runna.com/en/articles/6376223-goblet-squat-exercise-tutorial-for-runners' },
+        { id: 'pmr',   n: 'Peso muerto rumano', obj: '3 × 8', extra: true,
+          nota: 'Runna no trae bisagra de cadera con carga',
+          vid: 'https://support.runna.com/en/articles/6331984-straight-leg-deadlift-exercise-tutorial' },
+        { id: 'r_isqi', n: 'Flexiones isométricas de isquiotibiales a 1 pierna', obj: '3 × 20 s por lado', sinPeso: true,
+          nota: '3 series, 2 min de descanso',
+          vid: 'https://support.runna.com/en/articles/7946130-single-leg-isometric-hamstring-hold-exercise-tutorial' },
+        { id: 'r_zanp', n: 'Zancada y press', obj: '3 series',
+          nota: 'con mancuerna',
+          vid: 'https://support.runna.com/en/articles/6398160-lunge-and-press-exercise-tutorial' },
+        { id: 'tal_s', n: 'Elevación de talón sentado', obj: '3 × 15', extra: true,
+          nota: 'rodilla flexionada → sóleo. Tu punto débil; Runna no lo toca',
+          vid: 'https://support.runna.com/en/articles/6364682-seated-calf-raise-exercise-tutorial' },
+        { id: 'tal_p', n: 'Elevación de talón de pie', obj: '3 × 15', extra: true,
+          nota: 'rodilla extendida → gastrocnemio',
+          vid: 'https://support.runna.com/en/articles/6395288-double-leg-calf-raise-exercise-tutorial' },
+        { id: 'pp',    n: 'Pallof press', obj: '3 × 10 por lado', extra: true,
+          nota: 'antirrotación; Runna no trae nada equivalente' },
+        { id: 'r_plat', n: 'Plancha lateral', obj: '2 series por lado', sinPeso: true,
+          vid: 'https://support.runna.com/en/articles/6363965-side-plank-exercise-tutorial' },
+        { id: 'bd',    n: 'Bird-dog', obj: '2 × 10 por lado', sinPeso: true, extra: true,
+          nota: 'antiextensión y estabilidad' },
+      ],
+    },
   };
+
+  /* plan.js marca los días como "A" o "B"; hoy las dos son la misma rutina.
+     Este indirecto es el que evita tener que reescribir plan.js —  que además
+     trae cambios de la otra máquina sin commitear. */
+  function rutinaFuerza(clave) { return clave ? FUERZA.R : null; }
+
+  /* Los de A y B que NO regresaron, porque Runna ya cubre su estímulo con
+     otro nombre. Lo ya registrado con estos ids sigue en localStorage: sin
+     este mapa saldría del export sin nombre, o sea se perdería en silencio.
+     Los que sí regresaron conservan su id y no necesitan estar aquí. */
+  const EJ_RETIRADOS = {
+    zb:   'Zancada búlgara',            pg1: 'Puente de glúteo a 1 pierna',
+    plat: 'Plancha lateral (3 × 30 s)', su:  'Step-up con mancuernas',
+    pfr:  'Plancha frontal',
+  };
+  function nombreEjercicio(id) {
+    for (const k of Object.keys(FUERZA)) {
+      const ej = FUERZA[k].ejercicios.find(x => x.id === id);
+      if (ej) return ej.n;
+    }
+    return EJ_RETIRADOS[id] || null;
+  }
 
   // ── Estado ────────────────────────────────────────────────
   let log = load();
@@ -148,7 +224,10 @@
       log[s.id] = Object.assign({}, prev, {
         done: true,
         km: e.km != null ? e.km : (prev.km || 0),
-        timeMin: e.min != null ? Math.round(e.min) : (prev.timeMin ?? null),
+        // Un decimal, no entero: los entrenamientos vienen en mm:ss y 40:30
+        // redondeado a 41 min desplaza el ritmo 8 s/km — justo la precisión
+        // que necesita la comparación contra el rango objetivo.
+        timeMin: e.min != null ? Math.round(e.min * 10) / 10 : (prev.timeMin ?? null),
         fcMedia: e.fc != null ? Math.round(e.fc) : (prev.fcMedia ?? null),
         rpe: prev.rpe ?? 5,
         notes: prev.notes || '',
@@ -514,6 +593,7 @@
     html += `</div>`;
 
     html += cuerpoCard();
+    html += guiaFuerzaCard();
 
     html += `<h2 class="section-h">Tus ritmos</h2>
     <div class="card">
@@ -546,6 +626,40 @@
     </div>`;
 
     document.getElementById('plan-content').innerHTML = html;
+  }
+
+  // ── Render: guía de ejercicios ────────────────────────────
+  /* Catálogo de consulta rápida. Vive en Plan y no en la hoja de captura
+     porque ahí estorbaría: en la hoja va el enlace suelto de cada ejercicio,
+     que es lo que se necesita a media serie. Aquí se lee completo, antes o
+     después de entrenar. */
+  function guiaFuerzaCard() {
+    const linea = ej => `<li class="gf-ej">
+      <span class="gf-n">${esc(ej.n)}${ej.extra ? '<span class="gf-tag">añadido</span>' : ''}
+        ${ej.nota ? `<span class="gf-nota">${esc(ej.nota)}</span>` : ''}</span>
+      <span class="gf-o">${esc(ej.obj)}</span>
+      ${ej.vid ? `<a class="fza-vid" href="${esc(ej.vid)}" target="_blank" rel="noopener">técnica</a>`
+               : '<span class="gf-sin">sin video</span>'}
+    </li>`;
+
+    const r = FUERZA.R;
+    const dias = PLAN.weeks.reduce((n, w) => n + w.sessions.filter(s => s.fuerza).length, 0);
+    return `<h2 class="section-h">Guía de ejercicios</h2>
+    <div class="card">
+      <p class="eyebrow">${esc(r.titulo)}</p>
+      <p class="note" style="margin-top:0">${esc(r.meta)}. Cada enlace abre el tutorial de
+      Runna: video y las claves de técnica escritas. Son páginas públicas, no piden cuenta.</p>
+      <ul class="gf-lista" style="margin-top:12px">${r.ejercicios.map(linea).join('')}</ul>
+      <p class="note">Es la misma rutina en los ${dias} días de fuerza del plan: de Runna se
+      capturó una sola sesión. Si sacas más de su plan, se agregan y se reparten.</p>
+      <p class="note">Los marcados <b>añadido</b> no vienen de Runna: son de tus rutinas A y B
+      y volvieron porque Runna no cubre ese estímulo con nada. Los demás de A y B se quedaron
+      fuera porque sí están, con otro nombre — la estocada caminando hace lo de la zancada
+      búlgara, y el isométrico de isquiotibiales lo del puente de glúteo.</p>
+      <p class="note note-warn">La sesión quedó en 45–55 min, casi el doble que la de Runna
+      sola. Si un día no te alcanza el tiempo, recorta el calentamiento antes que la carga:
+      lo que sostiene el plan son las elevaciones de talón, el peso muerto y la sentadilla.</p>
+    </div>`;
   }
 
   // ── Render: tarjeta "Tu cuerpo" ───────────────────────────
@@ -631,18 +745,32 @@
     if (!fechas.length) {
       return `<h2 class="section-h">Fuerza</h2>
       <div class="card"><p class="note" style="margin:0">Todavía no hay pesos
-      registrados. Se capturan al abrir un día con Fuerza A o B. La progresión
-      de carga arranca en la <b>semana 5</b>; para entonces conviene tener con
+      registrados. Se capturan al abrir un día de fuerza. En esta rutina el único
+      ejercicio con carga es <b>zancada y press</b>, así que la progresión se sigue
+      por ahí. Arranca en la <b>semana 5</b>; para entonces conviene tener con
       qué comparar.</p></div>`;
     }
+    const serieDe = id => fechas
+      .filter(f => fuerza[f][id] && Number.isFinite(fuerza[f][id].kg))
+      .map(f => ({ fecha: f, kg: fuerza[f][id].kg, reps: fuerza[f][id].reps }));
+
     const todos = [];
+    const vistos = new Set();
     Object.keys(FUERZA).forEach(k => FUERZA[k].ejercicios.forEach(ej => {
+      vistos.add(ej.id);
       if (ej.sinPeso) return;
-      const serie = fechas
-        .filter(f => fuerza[f][ej.id] && Number.isFinite(fuerza[f][ej.id].kg))
-        .map(f => ({ fecha: f, kg: fuerza[f][ej.id].kg, reps: fuerza[f][ej.id].reps }));
+      const serie = serieDe(ej.id);
       if (serie.length) todos.push({ ej, serie });
     }));
+
+    /* Ejercicios que ya no están en la rutina pero de los que sí hay cargas
+       registradas. Si no se listaran, cambiar de rutina se vería como si el
+       historial se hubiera borrado — y no se borró, sigue en localStorage. */
+    Object.keys(EJ_RETIRADOS).forEach(id => {
+      if (vistos.has(id)) return;
+      const serie = serieDe(id);
+      if (serie.length) todos.push({ ej: { n: EJ_RETIRADOS[id], obj: 'rutina retirada' }, serie, viejo: true });
+    });
     if (!todos.length) {
       return `<h2 class="section-h">Fuerza</h2>
       <div class="card"><p class="note" style="margin:0">Hay sesiones marcadas
@@ -650,11 +778,11 @@
     }
     return `<h2 class="section-h">Fuerza</h2>
     <div class="card">
-      ${todos.map(({ ej, serie }) => {
+      ${todos.map(({ ej, serie, viejo }) => {
         const u = serie[serie.length - 1];
         const p = serie.length > 1 ? serie[serie.length - 2] : null;
         const d = p ? u.kg - p.kg : 0;
-        return `<div class="cuerpo-f">
+        return `<div class="cuerpo-f"${viejo ? ' style="opacity:.62"' : ''}>
           <div class="cuerpo-h">
             <span class="cuerpo-t">${esc(ej.n)}</span>
             <span class="cuerpo-v" style="color:var(--good)">${u.kg} kg${
@@ -662,7 +790,8 @@
           </div>
           ${serie.length > 1 ? spark(serie.map(x => x.kg), 'var(--good)', null) : ''}
           <span class="cuerpo-s">${pl(serie.length, 'sesión', 'sesiones')} ·
-            última ${fmtCorto(u.fecha)}${u.reps ? ` · ${u.reps} reps` : ''} · objetivo ${esc(ej.obj)}</span>
+            última ${fmtCorto(u.fecha)}${u.reps ? ` · ${u.reps} reps` : ''} ·
+            ${viejo ? 'de una rutina que ya no está en el plan' : `objetivo ${esc(ej.obj)}`}</span>
         </div>`;
       }).join('')}
       <p class="note">S1–S4 es técnica y carga ligera. <b>La progresión empieza
@@ -696,9 +825,9 @@
         const fz = fuerza[s.date];
         if (fz) {
           const det = Object.keys(fz).map(id => {
-            const ej = (FUERZA.A.ejercicios.concat(FUERZA.B.ejercicios)).find(x => x.id === id);
+            const n = nombreEjercicio(id);
             const v = fz[id];
-            return ej && Number.isFinite(v.kg) ? `${ej.n} ${v.kg} kg${v.reps ? `×${v.reps}` : ''}` : null;
+            return n && Number.isFinite(v.kg) ? `${n} ${v.kg} kg${v.reps ? `×${v.reps}` : ''}` : null;
           }).filter(Boolean);
           if (det.length) partes.push(`Fuerza: ${det.join(', ')}`);
         }
@@ -931,8 +1060,8 @@
 
   function pintarFuerza(s) {
     const bloque = document.getElementById('fza-bloque');
-    if (!s.fuerza || !FUERZA[s.fuerza]) { bloque.hidden = true; return; }
-    const rut = FUERZA[s.fuerza];
+    const rut = rutinaFuerza(s.fuerza);
+    if (!rut) { bloque.hidden = true; return; }
     const hoy = fuerzaDe(s.date);
     document.getElementById('fza-titulo').textContent = rut.titulo;
     document.getElementById('fza-lista').innerHTML = rut.ejercicios.map(ej => {
@@ -943,7 +1072,8 @@
         : 'sin registro previo';
       return `<div class="fza-ej">
         <div class="fza-h">
-          <span class="fza-n">${esc(ej.n)}</span>
+          <span class="fza-n">${esc(ej.n)}${ej.vid
+            ? ` <a class="fza-vid" href="${esc(ej.vid)}" target="_blank" rel="noopener">técnica</a>` : ''}</span>
           <span class="fza-o">${esc(ej.obj)}</span>
         </div>
         ${ej.nota ? `<span class="fza-nota">${esc(ej.nota)}</span>` : ''}
