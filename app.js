@@ -1221,6 +1221,9 @@
       const ref = prev
         ? `última: ${prev.kg} kg${prev.reps ? ` × ${prev.reps}` : ''} · ${fmtCorto(prev.fecha)}`
         : 'sin registro previo';
+      // El cómo se ejecuta vive en guia.js, junto al resto de las explicaciones.
+      // Plegado: se lee cuando hace falta, sin alargar el formulario de captura.
+      const gej = typeof guiaEjercicio === 'function' ? guiaEjercicio(ej.id) : null;
       return `<div class="fza-ej">
         <div class="fza-h">
           <span class="fza-n">${esc(ej.n)}${ej.vid
@@ -1228,6 +1231,11 @@
           <span class="fza-o">${esc(ej.obj)}</span>
         </div>
         ${ej.nota ? `<span class="fza-nota">${esc(ej.nota)}</span>` : ''}
+        ${gej ? `<details class="fza-guia">
+          <summary class="fza-guia-t">Cómo se hace</summary>
+          <ol class="fza-guia-p">${gej.pasos.map(p => `<li>${esc(p)}</li>`).join('')}</ol>
+          ${gej.ojo ? `<p class="fza-guia-o"><b>Ojo.</b> ${esc(gej.ojo)}</p>` : ''}
+        </details>` : ''}
         <div class="fza-in">
           ${ej.sinPeso
             ? `<label class="fza-c"><span>Series hechas</span>

@@ -296,3 +296,143 @@ function guiaDe(s) {
   const p = g => { const i = _PRIO.indexOf(g.id); return i === -1 ? _PRIO.length : i; };
   return out.sort((a, b) => p(a) - p(b)).slice(0, 5);
 }
+
+/* ── Cómo se ejecuta cada ejercicio de fuerza ──────────────────────────────
+   Va por id, el mismo que usa FUERZA en app.js: así la explicación y el
+   historial de cargas no se pueden desalinear. Si un id no está aquí, la app
+   simplemente no pinta el bloque — no se rompe nada.
+
+   Complementa al enlace "técnica" (que abre el tutorial de Runna): esto se lee
+   sin señal y sin salir de la app, con la mancuerna ya en la mano. */
+const FZA_GUIA = {
+
+  // ── Calentamiento (peso corporal) ───────────────────────────────────────
+  r_sent: {
+    pasos: [
+      'Pies al ancho de los hombros, puntas ligeramente hacia afuera, brazos al frente para equilibrar.',
+      'Baja llevando la cadera hacia atrás y abajo, como si te sentaras en una silla. Pecho arriba y peso repartido en todo el pie.',
+      'Baja hasta donde llegues sin que la espalda baja se redondee — con el tiempo, hasta que el muslo quede paralelo al suelo.',
+      'Sube empujando el suelo con los talones, sin rebotar abajo. Ritmo continuo durante los 30 s.',
+    ],
+    ojo: 'Si las rodillas se van hacia adentro, abre un poco los pies y piensa en "empujar las rodillas hacia afuera" mientras subes.',
+  },
+  r_camf: {
+    pasos: [
+      'De pie, baja las manos al suelo doblando las rodillas lo que haga falta.',
+      'Camina con las manos hacia adelante hasta quedar en plancha alta (cuerpo en línea recta de la cabeza a los talones).',
+      'Haz una flexión. Si no sale limpia, apoya las rodillas: media flexión bien hecha vale más que una completa hundida.',
+      'Camina las manos de regreso hacia los pies y ponte de pie. Repite durante los 30 s.',
+    ],
+    ojo: 'En la plancha, la cadera no se hunde ni se levanta. Aprieta abdomen y glúteos como si fueras a recibir un golpe en la panza.',
+  },
+  r_estc: {
+    pasos: [
+      'Da un paso largo al frente y baja hasta que las dos rodillas queden a unos 90°.',
+      'La rodilla de atrás baja hacia el suelo sin tocarlo. El torso, vertical: no te vayas hacia adelante.',
+      'Empuja con el talón de la pierna de adelante y trae el pie de atrás al frente, directo al siguiente paso.',
+      'Alterna piernas sin pausa durante los 30 s.',
+    ],
+    ojo: 'Pasos largos, no cortos: un paso corto le pasa toda la carga a la rodilla. Si te tambaleas, separa un poco la línea de los pies — no camines como sobre una cuerda floja.',
+  },
+  r_toqd: {
+    pasos: [
+      'Párate en una pierna, con la rodilla de apoyo suelta (ligeramente flexionada, nunca bloqueada).',
+      'Con la pierna libre, toca el suelo lo más lejos que puedas en diagonal hacia adelante y hacia afuera.',
+      'Regresa al centro sin apoyar el peso en esa pierna. El movimiento sale de la cadera y la rodilla de apoyo, no de la espalda.',
+      'Completa los 30 s de un lado antes de cambiar.',
+    ],
+    ojo: 'Si pierdes el equilibrio, acorta la distancia del toque. Aquí se entrena el control del tobillo y la cadera, no el alcance.',
+  },
+
+  // ── Fuerza con carga ────────────────────────────────────────────────────
+  sg: {
+    pasos: [
+      'Sostén la mancuerna en vertical contra el pecho, las dos manos por debajo de la cabeza superior, codos apuntando al suelo.',
+      'Pies al ancho de los hombros, puntas un poco hacia afuera.',
+      'Baja controlado en 2–3 segundos, dejando que los codos pasen por dentro de las rodillas en la parte baja.',
+      'Sube empujando el suelo. El pecho y la cadera suben al mismo tiempo: si la cadera se dispara primero, bajaste demasiado o hay demasiado peso.',
+      '10 repeticiones, 3 series, con 1½–2 min entre series.',
+    ],
+    ojo: 'El peso al frente te ayuda a mantener el torso vertical. Si aun así te vas hacia adelante, la carga es demasiada — baja kilos, no técnica.',
+  },
+  pmr: {
+    pasos: [
+      'De pie, mancuernas al frente de los muslos, rodillas ligeramente flexionadas y FIJAS ahí todo el movimiento.',
+      'Manda la cadera hacia atrás (no bajes doblando las rodillas), deslizando las mancuernas pegadas a la pierna.',
+      'Baja hasta sentir el estirón claro en la parte de atrás del muslo, normalmente a media espinilla. Espalda plana de principio a fin.',
+      'Sube empujando la cadera hacia adelante y apretando los glúteos. Termina de pie, sin arquear la espalda hacia atrás.',
+      '8 repeticiones, 3 series, con 2 min entre series.',
+    ],
+    ojo: 'Es bisagra de cadera, no sentadilla. Si lo sientes en la espalda baja y no en los isquiotibiales, estás redondeando la espalda o bajando más de lo que da tu flexibilidad.',
+  },
+  r_isqi: {
+    pasos: [
+      'Acostado boca arriba, un talón apoyado en el suelo (o sobre un escalón o silla baja) con esa rodilla a unos 90°. La otra pierna, levantada en el aire.',
+      'Levanta la cadera hasta formar una línea recta del hombro a la rodilla, clavando el talón contra el suelo.',
+      'SOSTÉN 20 segundos sin bajar. Respira normal, no aguantes el aire.',
+      'Cambia de lado. 3 series por pierna, con 2 min de descanso.',
+    ],
+    ojo: 'El trabajo se siente en la parte de atrás del muslo de la pierna apoyada. Si solo lo sientes en el glúteo o en la espalda baja, acerca el talón al cuerpo. Si te da calambre, baja un poco la cadera.',
+  },
+  r_zanp: {
+    pasos: [
+      'Mancuernas a la altura de los hombros, palmas al frente, codos abajo.',
+      'Da la zancada al frente y baja controlado hasta unos 90° en las dos rodillas.',
+      'Al subir, empuja las mancuernas por encima de la cabeza hasta estirar los brazos.',
+      'Baja el peso a los hombros, junta los pies y repite con la otra pierna. 3 series.',
+    ],
+    ojo: 'No arquees la espalda al empujar arriba: costillas abajo y abdomen firme. Si no puedes hacer el press sin arquearte, el peso está alto para el press aunque te sobre para la zancada.',
+  },
+
+  // ── Gemelo: el punto débil identificado ─────────────────────────────────
+  tal_s: {
+    pasos: [
+      'Sentado, pies planos en el suelo y rodillas a 90°, con la mancuerna apoyada sobre los muslos, lo más cerca posible de las rodillas.',
+      'Sube los talones lo más alto que puedas y aprieta arriba 1 segundo.',
+      'Baja LENTO, contando 3 segundos. Si tienes las puntas sobre un escalón o un libro grueso, deja que el talón baje por debajo del nivel del pie.',
+      '15 repeticiones, 3 series.',
+    ],
+    ojo: 'La rodilla flexionada es justo lo que aísla el sóleo, que es tu punto débil. Aquí la lentitud al bajar vale más que el peso: si no puedes bajar en 3 segundos, sobra carga.',
+  },
+  tal_p: {
+    pasos: [
+      'De pie con una mancuerna en cada mano, brazos relajados a los costados. Rodillas extendidas, pero no bloqueadas de golpe.',
+      'Sube a puntas lo más alto posible, 1 segundo arriba.',
+      'Baja lento y con rango completo. Sobre un escalón, el talón baja por debajo del nivel del pie.',
+      '15 repeticiones, 3 series.',
+    ],
+    ojo: 'Si necesitas la pared para el equilibrio, tócala con un dedo — no te apoyes, porque entonces le estás quitando carga al gemelo.',
+  },
+
+  // ── Core antirrotación y antiextensión ──────────────────────────────────
+  pp: {
+    pasos: [
+      'Ancla una liga a la altura del pecho (poste, manija de una puerta cerrada, barandal) y colócate de costado a ella.',
+      'Sujeta el agarre con las dos manos pegadas al esternón. Aléjate hasta que la liga tenga tensión clara. Pies al ancho de los hombros, rodillas suaves.',
+      'Estira los brazos al frente y SOSTÉN 2–3 segundos resistiendo el jalón que quiere girarte.',
+      'Regresa las manos al pecho, controlado. 10 repeticiones por lado, 3 series.',
+    ],
+    ojo: 'El cuerpo no debe rotar ni un centímetro: el ejercicio es no moverse. Si la liga te jala, acércate al anclaje en vez de aguantar torcido.',
+  },
+  r_plat: {
+    pasos: [
+      'De lado, apoyado en el antebrazo, con el codo justo debajo del hombro. Pies juntos o escalonados.',
+      'Sube la cadera hasta formar una línea recta del tobillo a la cabeza y sostén.',
+      'Hombro lejos de la oreja y cadera arriba todo el tiempo. Respira normal.',
+      '2 series por lado.',
+    ],
+    ojo: 'En cuanto la cadera empiece a caer, se acabó la serie. 20 segundos con la línea recta valen más que 45 hundido.',
+  },
+  bd: {
+    pasos: [
+      'En cuatro apoyos: manos debajo de los hombros, rodillas debajo de las caderas, espalda neutra.',
+      'Estira a la vez el brazo derecho y la pierna izquierda hasta la horizontal, sin que la cadera se abra ni la espalda se arquee.',
+      'Sostén 2 segundos, regresa controlado y cambia de lado.',
+      '10 repeticiones por lado, 2 series.',
+    ],
+    ojo: 'Imagina un vaso de agua sobre tu espalda baja: no se debe derramar. Es control y lentitud; hecho rápido no entrena nada.',
+  },
+};
+
+/* Devuelve el cómo de un ejercicio, o null si ese id no tiene explicación. */
+function guiaEjercicio(id) { return FZA_GUIA[id] || null; }
