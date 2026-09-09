@@ -235,6 +235,13 @@ h2.section-h { font-size: 15px; font-weight: 650; margin: 20px 0 8px; }
 /* En la hoja de captura ya hay una caja de descripción arriba: sin doble línea. */
 #sheet-guia .guia { margin: 0 0 16px; border-top: none; }
 #sheet-guia .guia-h { margin-top: 0; }
+/* El glosario del Plan: mismos bloques, dentro de una tarjeta que ya trae
+   su propio encabezado y su nota. */
+.guia-glos { margin-top: 10px; border-top: none; }
+.guia-veces {
+  margin-left: 8px; font-size: 11px; font-weight: 600; white-space: nowrap;
+  color: var(--ink-muted); font-variant-numeric: tabular-nums;
+}
 
 /* Alerta de FC en reposo — la única regla del plan que se automatiza */
 .alerta {

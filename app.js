@@ -463,6 +463,35 @@
   /* El "cómo se hace" de cada sesión vive en guia.js, aparte del plan. Si ese
      archivo no cargó (cache vieja, red caída a media actualización), esto
      devuelve cadena vacía y la app queda exactamente como estaba antes. */
+  /* Los bloques plegables. Lo comparten la sesión del día y el glosario del
+     Plan, para que una guía no pueda verse de dos maneras distintas.
+     `veces` es opcional: en el glosario cuenta en cuántas sesiones aplica. */
+  function guiaBloques(gs, abrirPrimero, veces) {
+    return gs.map((g, i) => `<details class="guia-b"${abrirPrimero && i === 0 ? ' open' : ''}>
+      <summary class="guia-t">${esc(g.titulo)}${veces
+        ? `<span class="guia-veces">${veces(g)}</span>` : ''}</summary>
+      <div class="guia-c">
+        <p class="guia-q">${esc(g.que)}</p>
+        ${g.pasos && g.pasos.length
+          ? `<ol class="guia-p">${g.pasos.map(p => `<li>${esc(p)}</li>`).join('')}</ol>` : ''}
+        ${g.porque ? `<p class="guia-n"><b>Para qué sirve.</b> ${esc(g.porque)}</p>` : ''}
+        ${g.ojo ? `<p class="guia-n guia-ojo"><b>Ojo.</b> ${esc(g.ojo)}</p>` : ''}
+      </div>
+    </details>`).join('');
+  }
+
+  /* El "cómo se hace" de un ejercicio de fuerza. Lo usan la hoja de captura y
+     la guía de ejercicios del Plan: una sola definición, una sola forma. */
+  function comoEjercicio(id) {
+    const g = typeof guiaEjercicio === 'function' ? guiaEjercicio(id) : null;
+    if (!g) return '';
+    return `<details class="fza-guia">
+      <summary class="fza-guia-t">Cómo se hace</summary>
+      <ol class="fza-guia-p">${g.pasos.map(p => `<li>${esc(p)}</li>`).join('')}</ol>
+      ${g.ojo ? `<p class="fza-guia-o"><b>Ojo.</b> ${esc(g.ojo)}</p>` : ''}
+    </details>`;
+  }
+
   function guiaHTML(s) {
     if (typeof guiaDe !== 'function') return '';
     const gs = guiaDe(s);
@@ -471,16 +500,7 @@
     // el contexto queda a un toque de distancia.
     return `<div class="guia">
       <p class="guia-h">Cómo se hace</p>
-      ${gs.map((g, i) => `<details class="guia-b"${i === 0 ? ' open' : ''}>
-        <summary class="guia-t">${esc(g.titulo)}</summary>
-        <div class="guia-c">
-          <p class="guia-q">${esc(g.que)}</p>
-          ${g.pasos && g.pasos.length
-            ? `<ol class="guia-p">${g.pasos.map(p => `<li>${esc(p)}</li>`).join('')}</ol>` : ''}
-          ${g.porque ? `<p class="guia-n"><b>Para qué sirve.</b> ${esc(g.porque)}</p>` : ''}
-          ${g.ojo ? `<p class="guia-n guia-ojo"><b>Ojo.</b> ${esc(g.ojo)}</p>` : ''}
-        </div>
-      </details>`).join('')}
+      ${guiaBloques(gs, true)}
     </div>`;
   }
 
@@ -714,9 +734,11 @@
         </div>`).join('')}
       </div>
       <p class="note">${esc(PLAN.calor)}</p>
-    </div>
+    </div>`;
 
-    <div class="card">
+    html += glosarioCard();
+
+    html += `<div class="card">
       <p class="eyebrow">Estrategia</p>
       <p class="hero-desc" style="font-size:15px">${esc(PLAN.estrategia)}</p>
     </div>
@@ -736,15 +758,42 @@
     document.getElementById('plan-content').innerHTML = html;
   }
 
+  // ── Render: glosario ──────────────────────────────────────
+  /* Las mismas guías de guia.js, pero TODAS y en orden temático. En Hoy solo
+     salen las que aplican a la sesión; aquí se puede leer qué son las rectas
+     el día que toca un largo, o repasar el día de la carrera en septiembre. */
+  function glosarioCard() {
+    if (typeof GUIA === 'undefined' || !GUIA.length) return '';
+    /* En cuántas sesiones del plan aplica cada concepto. Convierte el glosario
+       en un mapa de qué pesa de verdad aquí — 59 rodajes fáciles contra 1
+       simulacro — en vez de una lista plana de definiciones. */
+    const veces = g => {
+      let n = 0;
+      ALL.forEach(s => { try { if (g.cuando(s)) n++; } catch (e) { /* se ignora */ } });
+      return n === 1 ? '1 sesión' : `${n} sesiones`;
+    };
+    return `<h2 class="section-h">Glosario del plan</h2>
+    <div class="card">
+      <p class="note" style="margin-top:0">Qué es cada tipo de sesión, cómo se ejecuta y cuál
+      es el error típico. Es lo mismo que aparece en Hoy y en el detalle de cada día, pero
+      completo y siempre disponible. El número dice en cuántas de las ${ALL.length} sesiones
+      del plan aplica.</p>
+      <div class="guia guia-glos">${guiaBloques(GUIA, false, veces)}</div>
+    </div>`;
+  }
+
   // ── Render: guía de ejercicios ────────────────────────────
   /* Catálogo de consulta rápida. Vive en Plan y no en la hoja de captura
      porque ahí estorbaría: en la hoja va el enlace suelto de cada ejercicio,
      que es lo que se necesita a media serie. Aquí se lee completo, antes o
      después de entrenar. */
   function guiaFuerzaCard() {
+    // Mismo "cómo se hace" que en la hoja de captura: el catálogo de consulta
+    // no puede saber menos que la pantalla donde se registra la serie.
     const linea = ej => `<li class="gf-ej">
       <span class="gf-n">${esc(ej.n)}${ej.extra ? '<span class="gf-tag">añadido</span>' : ''}
-        ${ej.nota ? `<span class="gf-nota">${esc(ej.nota)}</span>` : ''}</span>
+        ${ej.nota ? `<span class="gf-nota">${esc(ej.nota)}</span>` : ''}
+        ${comoEjercicio(ej.id)}</span>
       <span class="gf-o">${esc(ej.obj)}</span>
       ${ej.vid ? `<a class="fza-vid" href="${esc(ej.vid)}" target="_blank" rel="noopener">técnica</a>`
                : '<span class="gf-sin">sin video</span>'}
@@ -1221,9 +1270,6 @@
       const ref = prev
         ? `última: ${prev.kg} kg${prev.reps ? ` × ${prev.reps}` : ''} · ${fmtCorto(prev.fecha)}`
         : 'sin registro previo';
-      // El cómo se ejecuta vive en guia.js, junto al resto de las explicaciones.
-      // Plegado: se lee cuando hace falta, sin alargar el formulario de captura.
-      const gej = typeof guiaEjercicio === 'function' ? guiaEjercicio(ej.id) : null;
       return `<div class="fza-ej">
         <div class="fza-h">
           <span class="fza-n">${esc(ej.n)}${ej.vid
@@ -1231,11 +1277,7 @@
           <span class="fza-o">${esc(ej.obj)}</span>
         </div>
         ${ej.nota ? `<span class="fza-nota">${esc(ej.nota)}</span>` : ''}
-        ${gej ? `<details class="fza-guia">
-          <summary class="fza-guia-t">Cómo se hace</summary>
-          <ol class="fza-guia-p">${gej.pasos.map(p => `<li>${esc(p)}</li>`).join('')}</ol>
-          ${gej.ojo ? `<p class="fza-guia-o"><b>Ojo.</b> ${esc(gej.ojo)}</p>` : ''}
-        </details>` : ''}
+        ${comoEjercicio(ej.id)}
         <div class="fza-in">
           ${ej.sinPeso
             ? `<label class="fza-c"><span>Series hechas</span>
