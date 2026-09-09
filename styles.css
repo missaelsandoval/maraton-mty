@@ -199,6 +199,43 @@ h2.section-h { font-size: 15px; font-weight: 650; margin: 20px 0 8px; }
 .zona-k { font-size: 11px; color: var(--ink-muted); font-variant-numeric: tabular-nums; text-align: right; white-space: nowrap; }
 .note-warn { border-left: 3px solid var(--warning); padding-left: 10px; }
 
+/* ── Guía de ejecución ("cómo se hace") ───────────────────
+   El plan dice QUÉ; esto dice CÓMO. Va plegado en acordeón: la primera
+   guía abierta (lo específico del día) y el resto a un toque, para que
+   la tarjeta de Hoy no se convierta en un muro de texto. */
+.guia { margin-top: 14px; border-top: 1px solid var(--grid); }
+.guia-h {
+  margin: 12px 0 2px; font-size: 11px; font-weight: 700;
+  letter-spacing: .06em; text-transform: uppercase; color: var(--ink-muted);
+}
+.guia-b { border-top: 1px solid var(--grid); }
+.guia-b:first-of-type { border-top: none; }
+.guia-t {
+  display: flex; align-items: center; gap: 8px; min-height: 40px;
+  padding: 10px 0; font-size: 14px; font-weight: 650; color: var(--ink);
+  cursor: pointer; list-style: none;
+}
+.guia-t::-webkit-details-marker { display: none; }
+.guia-t::after {
+  content: '›'; margin-left: auto; font-size: 19px; line-height: 1;
+  color: var(--ink-muted); transform: rotate(90deg); transition: transform .15s ease;
+}
+.guia-b[open] > .guia-t::after { transform: rotate(-90deg); }
+.guia-c { padding: 0 0 14px; }
+.guia-q { margin: 0 0 10px; font-size: 13.5px; line-height: 1.55; color: var(--ink-2); }
+.guia-p { margin: 0; padding-left: 20px; display: grid; gap: 7px; }
+.guia-p li { font-size: 13.5px; line-height: 1.5; color: var(--ink-2); }
+.guia-p li::marker { color: var(--ink-muted); font-weight: 700; font-variant-numeric: tabular-nums; }
+.guia-n {
+  margin: 11px 0 0; padding-left: 10px; font-size: 12.5px; line-height: 1.5;
+  color: var(--ink-muted); border-left: 3px solid var(--grid);
+}
+.guia-n b { color: var(--ink-2); }
+.guia-ojo { border-left-color: var(--warning); }
+/* En la hoja de captura ya hay una caja de descripción arriba: sin doble línea. */
+#sheet-guia .guia { margin: 0 0 16px; border-top: none; }
+#sheet-guia .guia-h { margin-top: 0; }
+
 /* Alerta de FC en reposo — la única regla del plan que se automatiza */
 .alerta {
   border: 1px solid var(--race); border-left: 4px solid var(--race);

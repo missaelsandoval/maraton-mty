@@ -6,3 +6,6 @@ desktop.ini
 # Paso intermedio de build-shortcut.py; el .shortcut firmado sí se versiona,
 # para poder bajarlo al iPhone directo de GitHub.
 tools/dist/_sin-firmar.shortcut
+
+# Servidor local de previsualización: no va al repo público.
+.claude/

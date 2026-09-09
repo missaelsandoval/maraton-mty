@@ -459,6 +459,31 @@
     return { done, plan, sessions };
   }
 
+  // ── Guía de ejecución ─────────────────────────────────────
+  /* El "cómo se hace" de cada sesión vive en guia.js, aparte del plan. Si ese
+     archivo no cargó (cache vieja, red caída a media actualización), esto
+     devuelve cadena vacía y la app queda exactamente como estaba antes. */
+  function guiaHTML(s) {
+    if (typeof guiaDe !== 'function') return '';
+    const gs = guiaDe(s);
+    if (!gs.length) return '';
+    // Solo la primera abierta: lo específico del día se lee sin tocar nada,
+    // el contexto queda a un toque de distancia.
+    return `<div class="guia">
+      <p class="guia-h">Cómo se hace</p>
+      ${gs.map((g, i) => `<details class="guia-b"${i === 0 ? ' open' : ''}>
+        <summary class="guia-t">${esc(g.titulo)}</summary>
+        <div class="guia-c">
+          <p class="guia-q">${esc(g.que)}</p>
+          ${g.pasos && g.pasos.length
+            ? `<ol class="guia-p">${g.pasos.map(p => `<li>${esc(p)}</li>`).join('')}</ol>` : ''}
+          ${g.porque ? `<p class="guia-n"><b>Para qué sirve.</b> ${esc(g.porque)}</p>` : ''}
+          ${g.ojo ? `<p class="guia-n guia-ojo"><b>Ojo.</b> ${esc(g.ojo)}</p>` : ''}
+        </div>
+      </details>`).join('')}
+    </div>`;
+  }
+
   // ── Render: HOY ───────────────────────────────────────────
   function renderHoy() {
     const t = todayISO();
@@ -511,6 +536,7 @@
           <span class="pace-v">Fuerza ${s.fuerza} · 30–35 min, después de correr</span>
         </div>` : ''}
         ${s.week.num <= 9 && s.km > 0 ? `<p class="note note-warn">${esc(PLAN.calor)}</p>` : ''}
+        ${guiaHTML(s)}
         <div style="margin-top:16px">
           ${done
             ? `<span class="pill is-done"><span class="pill-dot"></span>Registrado${e && e.km ? ` · ${fmtKm(e.km)} km` : ''}${e && e.timeMin ? ` · ${e.timeMin} min` : ''}</span>
@@ -1126,6 +1152,8 @@
     const sd = document.getElementById('sheet-desc');
     sd.textContent = s.desc + (s.fuerza ? ` · Fuerza ${s.fuerza} después de correr.` : '');
     sd.hidden = false;
+    // El cómo, debajo del qué: se abre desde cualquier día de la semana.
+    document.getElementById('sheet-guia').innerHTML = guiaHTML(s);
     document.getElementById('f-km').value = e.km != null ? e.km : (rest ? '' : s.km);
     document.getElementById('f-time').value = e.timeMin != null ? e.timeMin : '';
     document.getElementById('f-fc').value = e.fcMedia != null ? e.fcMedia : '';
