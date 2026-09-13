@@ -961,6 +961,201 @@
     </div>`;
   }
 
+  // ── Render: PROGRESO ──────────────────────────────────────
+  /* Lo que las otras pestañas no responden. Hoy dice qué toca, Semana cómo va
+     la semana, Plan cómo es el plan. Aquí: qué está cambiando a lo largo del
+     ciclo y qué no.
+
+     Tres preguntas, porque son las tres que de verdad deciden el maratón:
+     ¿el ritmo se está acercando a la zona? ¿en qué día se cae el plan? ¿están
+     creciendo los largos? Todo se calcula del registro de este dispositivo;
+     no hay ningún número precargado. */
+  function renderProgreso() {
+    const hoy = todayISO();
+    const prog = ALL.filter(s => s.km > 0 && s.date <= hoy);
+    const hechas = prog.filter(s => isDone(s.id));
+
+    if (!hechas.length) {
+      document.getElementById('progreso-content').innerHTML = `<div class="card">
+        <p class="eyebrow">Todavía sin datos</p>
+        <p class="note" style="margin-top:0">Aquí aparecen las tendencias del ciclo en cuanto
+        registres sesiones: si el ritmo se acerca a la zona, en qué día de la semana se cae el
+        plan y cómo van creciendo las tiradas largas. Se calcula solo, de lo que guardes en Hoy
+        o en Semana.</p>
+      </div>`;
+      return;
+    }
+
+    const kmPlan = prog.reduce((t, s) => t + s.km, 0);
+    const kmReal = prog.reduce((t, s) => t + actualKm(s.id), 0);
+    const adher = kmPlan ? Math.round(kmReal / kmPlan * 100) : 0;
+
+    let html = `<div class="stat-row">
+      <div class="stat"><div class="stat-v">${hechas.length}<span style="font-size:14px;color:var(--ink-muted)">/${prog.length}</span></div><div class="stat-l">sesiones hechas</div></div>
+      <div class="stat"><div class="stat-v">${fmtKm(kmReal)}</div><div class="stat-l">km corridos</div></div>
+      <div class="stat"><div class="stat-v">${adher}%</div><div class="stat-l">del plan hasta hoy</div></div>
+    </div>`;
+
+    html += ritmoZonaCard();
+    html += diaFlojoCard(prog);
+    html += largosCard(hoy);
+
+    document.getElementById('progreso-content').innerHTML = html;
+  }
+
+  /* Desviación en s/km respecto a la zona objetivo de cada sesión. Cero es
+     estar dentro. Arriba = más rápido de lo que tocaba, que en este plan es
+     una falla igual que quedarse corto — y ha sido la falla dominante. */
+  function ritmoZonaCard() {
+    const pts = ALL
+      .filter(s => s.pace && isDone(s.id))
+      .map(s => { const v = vsObjetivo(s, log[s.id]); return v ? { s, v } : null; })
+      .filter(Boolean)
+      .sort((a, b) => a.s.date < b.s.date ? -1 : 1);
+    if (pts.length < 2) return '';
+
+    const dev = p => p.v.estado === 'rapido' ? -p.v.delta : p.v.estado === 'lento' ? p.v.delta : 0;
+    const maxAbs = Math.max(30, ...pts.map(p => Math.abs(dev(p))));
+    const STEP = 18, H = 120, MID = H / 2, PADB = 18;
+    const W = Math.max(pts.length * STEP, 60);
+    const y = d => MID + (d / maxAbs) * (MID - 8);
+    const color = p => p.v.estado === 'dentro' ? 'var(--good)'
+                     : p.v.estado === 'lento' ? 'var(--series-1)'
+                     : p.v.delta > 45 ? 'var(--critical)' : 'var(--warning)';
+
+    let linea = '', puntos = '', ticks = '';
+    pts.forEach((p, i) => {
+      const cx = i * STEP + STEP / 2, cy = y(dev(p));
+      linea += (i ? 'L' : 'M') + cx + ' ' + cy + ' ';
+      puntos += `<circle cx="${cx}" cy="${cy}" r="4" fill="${color(p)}"/>`;
+      // Una marca de semana cuando cambia, no una por sesión: en el móvil no cabe.
+      if (i === 0 || p.s.week.num !== pts[i - 1].s.week.num) {
+        ticks += `<text x="${cx}" y="${H + PADB}" text-anchor="middle" font-size="9"
+                    fill="var(--ink-muted)" font-family="var(--font)">S${p.s.week.num}</text>`;
+      }
+    });
+
+    const ult = pts[pts.length - 1];
+    return `<div class="card">
+      <p class="eyebrow">Ritmo contra la zona</p>
+      <div class="legend">
+        <span class="legend-item"><span class="legend-swatch" style="background:var(--good)"></span>En zona</span>
+        <span class="legend-item"><span class="legend-swatch" style="background:var(--warning)"></span>Rápido</span>
+        <span class="legend-item"><span class="legend-swatch" style="background:var(--series-1)"></span>Lento</span>
+      </div>
+      <div class="chart-wrap">
+        <svg class="chart" viewBox="0 0 ${W} ${H + 24}" width="${W}" height="${H + 24}" role="img"
+             aria-label="Desviación del ritmo respecto a la zona objetivo, sesión por sesión. Última: ${esc(ult.v.txt)}">
+          <line x1="0" y1="${MID}" x2="${W}" y2="${MID}" stroke="var(--good)" stroke-width="1.5" stroke-dasharray="3 3"/>
+          <text x="2" y="10" font-size="9" fill="var(--ink-muted)" font-family="var(--font)">+${Math.round(maxAbs)} s/km</text>
+          <path d="${linea}" fill="none" stroke="var(--axis)" stroke-width="1.5"/>
+          ${puntos}${ticks}
+        </svg>
+      </div>
+      <p class="note">La línea punteada es la zona. Arriba de ella fuiste más rápido de lo que
+      tocaba; abajo, más lento. El plan lo dice literal: pasarse cuenta como fallar, igual que
+      quedarse corto — y en zona fácil, pasarse es lo que cuesta caro.
+      Última sesión: <b>${esc(ult.v.txt)}</b>.</p>
+    </div>`;
+  }
+
+  /* En qué día se cae el plan. Un porcentaje por día de la semana dice, de un
+     vistazo, si el problema es capacidad o agenda: si el domingo va al 100 %
+     y el martes al 40 %, no faltan piernas, falta horario. */
+  function diaFlojoCard(prog) {
+    const DOWL = ['lun', 'mar', 'mié', 'jue', 'vie', 'sáb', 'dom'];
+    const dias = DOWL.map(() => ({ prog: 0, hecho: 0 }));
+    prog.forEach(s => {
+      const i = (parseISO(s.date).getDay() + 6) % 7;   // lunes = 0
+      dias[i].prog++;
+      if (isDone(s.id)) dias[i].hecho++;
+    });
+    const activos = dias.filter(d => d.prog > 0);
+    if (activos.length < 3) return '';
+
+    const BW = 26, GAP = 12, H = 96, PADB = 16;
+    const W = dias.length * (BW + GAP) - GAP;
+    let bars = '';
+    dias.forEach((d, i) => {
+      const x = i * (BW + GAP);
+      const pct = d.prog ? d.hecho / d.prog : 0;
+      const h = Math.max(pct * H, pct > 0 ? 3 : 0);
+      bars += `<rect x="${x}" y="0" width="${BW}" height="${H}" rx="4" fill="var(--grid)"/>`;
+      if (h > 0) {
+        const c = pct >= 0.8 ? 'var(--good)' : pct >= 0.5 ? 'var(--warning)' : 'var(--critical)';
+        bars += `<rect x="${x}" y="${H - h}" width="${BW}" height="${h}" rx="4" fill="${c}"/>`;
+      }
+      bars += `<text x="${x + BW / 2}" y="${H + PADB}" text-anchor="middle" font-size="10"
+                 fill="var(--ink-muted)" font-family="var(--font)">${DOWL[i]}</text>`;
+      if (d.prog) {
+        bars += `<text x="${x + BW / 2}" y="${H + PADB + 12}" text-anchor="middle" font-size="9"
+                   fill="var(--ink-muted)" font-family="var(--font)">${Math.round(pct * 100)}%</text>`;
+      }
+    });
+
+    // El peor día con al menos dos sesiones programadas: uno suelto no es patrón.
+    let peor = null;
+    dias.forEach((d, i) => {
+      if (d.prog < 2) return;
+      const pct = d.hecho / d.prog;
+      if (!peor || pct < peor.pct) peor = { i, pct, d };
+    });
+
+    return `<div class="card">
+      <p class="eyebrow">Dónde se cae la semana</p>
+      <div class="chart-wrap">
+        <svg class="chart" viewBox="0 0 ${W} ${H + 34}" width="${W}" height="${H + 34}" role="img"
+             aria-label="Porcentaje de sesiones cumplidas por día de la semana">${bars}</svg>
+      </div>
+      <p class="note">De las sesiones con kilómetros que ya tocaban, cuántas salieron.
+      ${peor && peor.pct < 0.8
+        ? `El punto flojo es el <b>${['lunes','martes','miércoles','jueves','viernes','sábado','domingo'][peor.i]}</b>
+           (${peor.d.hecho} de ${peor.d.prog}). Si los días largos van bien y este no, el problema
+           es el horario, no las piernas.`
+        : 'Sin punto flojo claro por ahora.'}</p>
+    </div>`;
+  }
+
+  /* La versión corta del veredicto. vsObjetivo devuelve la frase completa,
+     que cabe en el detalle de un día pero no en una fila de lista. */
+  function vsCorto(v) {
+    if (v.estado === 'dentro') return 'en zona';
+    return `${v.delta} s/km ${v.estado === 'rapido' ? 'rápido' : 'lento'}`;
+  }
+
+  /* Los largos son la columna del plan: es donde se construye terminar. Van
+     aparte porque una semana puede cumplir el volumen y aun así haberse
+     saltado el largo, que es el peor modo de cumplirla. */
+  function largosCard(hoy) {
+    const filas = PLAN.weeks
+      .map(w => ({ w, s: w.sessions.find(x => x.type === 'largo') }))
+      .filter(x => x.s && x.s.date <= hoy);
+    if (!filas.length) return '';
+
+    let html = `<h2 class="section-h">Las tiradas largas</h2><div class="card card-flat">`;
+    filas.forEach(({ w, s }) => {
+      const done = isDone(s.id);
+      const e = log[s.id];
+      const real = done ? ritmoReal(e) : null;
+      const v = done ? vsObjetivo(s, e) : null;
+      const km = done ? actualKm(s.id) : 0;
+      html += `<div class="wk-row">
+        <span class="wk-n">${w.num}</span>
+        <span class="wk-mid">
+          <span class="wk-top">
+            <span class="wk-phase">${done ? fmtKm(km) + ' km' : 'sin registrar'}</span>
+            <span class="wk-km">plan ${fmtKm(s.km)} km</span>
+          </span>
+          <span class="largo-meta">
+            ${fmtCorto(s.date)}${real != null ? ` · ${segMs(real)}/km` : ''}${e && e.fcMedia ? ` · ${e.fcMedia} ppm` : ''}
+            ${v ? ` · <span class="es-${v.estado}">${esc(vsCorto(v))}</span>` : ''}
+          </span>
+        </span>
+      </div>`;
+    });
+    return html + `</div>`;
+  }
+
   // ── Render: EXPORTAR ──────────────────────────────────────
   function markdownRows() {
     const rows = ALL
@@ -1387,11 +1582,12 @@
 
   // ── Bootstrap ─────────────────────────────────────────────
   function render() {
-    ['hoy', 'semana', 'plan', 'exportar'].forEach(v => {
+    ['hoy', 'semana', 'progreso', 'plan', 'exportar'].forEach(v => {
       document.getElementById('view-' + v).hidden = v !== view;
     });
     if (view === 'hoy') renderHoy();
     if (view === 'semana') renderSemana();
+    if (view === 'progreso') renderProgreso();
     if (view === 'plan') renderPlan();
     if (view === 'exportar') renderExportar();
   }

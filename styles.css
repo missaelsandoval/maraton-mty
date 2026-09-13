@@ -269,6 +269,12 @@ h2.section-h { font-size: 15px; font-weight: 650; margin: 20px 0 8px; }
   display: block; font-size: 11.5px; margin-top: 3px; font-weight: 650;
   font-variant-numeric: tabular-nums; color: var(--ink-muted);
 }
+/* Veredicto ritmo vs zona, suelto: lo usa la lista de largos en Progreso,
+   donde el span no cuelga de .day-vs ni de .ritmo-vs. */
+.es-dentro { color: var(--good); }
+.es-rapido { color: var(--warning); }
+.es-lento  { color: var(--ink-muted); }
+
 .day-vs.es-dentro { color: var(--good); }
 .day-vs.es-rapido { color: var(--warning); }
 .day-vs.es-lento  { color: var(--ink-muted); }
@@ -428,6 +434,14 @@ h2.section-h { font-size: 15px; font-weight: 650; margin: 20px 0 8px; }
 .wk-top { display: flex; justify-content: space-between; align-items: baseline; gap: 8px; }
 .wk-phase { font-size: 13px; font-weight: 600; display: inline-flex; align-items: center; gap: 6px; flex-wrap: wrap; }
 .wk-km { display: block; font-size: 12px; color: var(--ink-2); font-variant-numeric: tabular-nums; white-space: nowrap; }
+/* Segunda línea de la fila de largos. Hermana de .wk-km pero SIN nowrap: aquí
+   el veredicto es una frase y tiene que envolver, no cortarse. */
+.largo-meta {
+  display: block; margin-top: 2px;
+  font-size: 11px; line-height: 1.45; color: var(--ink-muted);
+  font-variant-numeric: tabular-nums;
+}
+
 .wk-track {
   display: block;
   height: 6px; border-radius: 999px; background: var(--grid);
@@ -454,7 +468,7 @@ h2.section-h { font-size: 15px; font-weight: 650; margin: 20px 0 8px; }
 /* ── Tabbar ─────────────────────────────────────────────── */
 .tabbar {
   position: fixed; left: 0; right: 0; bottom: 0; z-index: 20;
-  display: grid; grid-template-columns: repeat(4, 1fr);
+  display: grid; grid-template-columns: repeat(5, 1fr);
   padding: 6px 8px calc(env(safe-area-inset-bottom) + 6px);
   background: color-mix(in srgb, var(--plane) 88%, transparent);
   backdrop-filter: saturate(180%) blur(12px);
