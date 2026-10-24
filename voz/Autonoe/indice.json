@@ -65,6 +65,12 @@
  "inicio_largo": {
   "texto": "Hoy toca largo. Hoy no se gana nada yendo rápido: se gana terminando entero."
  },
+ "km_1": {
+  "texto": "Kilómetro uno."
+ },
+ "km_2": {
+  "texto": "Kilómetro dos."
+ },
  "logro_lento": {
   "texto": "El ritmo quedó arriba del rango. Si fue por el pulso, bien hecho."
  },
@@ -77,17 +83,21 @@
  "logro_rapido": {
   "texto": "Eso sí, más rápido de lo que tocaba. La próxima, guárdalo."
  },
- "logro_s2026-10-23": {
-  "desc": "Fuerza B",
-  "texto": "¡Objetivo cumplido! Fuerza hecha. Unas piernas fuertes aguantan el kilómetro treinta."
- },
  "logro_s2026-10-25": {
   "desc": "16 km en 5:1 suave",
   "texto": "¡Objetivo cumplido! 16 kilómetros de largo. Cada largo así es un ladrillo de tu maratón."
  },
+ "logro_s2026-10-27": {
+  "desc": "5 km fácil",
+  "texto": "¡Objetivo cumplido! 5 kilómetros fáciles. Así se construye la base."
+ },
  "logro_s2026-10-28": {
   "desc": "Tempo: 2 km cal + 2 × 2 km fuerte (rec 3 min) + 3 km",
   "texto": "¡Objetivo cumplido! Tempo completo: 2 series de 2 kilómetros a ritmo de umbral. Esto es lo que te hace más rápido."
+ },
+ "logro_s2026-10-29": {
+  "desc": "6 km fácil",
+  "texto": "¡Objetivo cumplido! 6 kilómetros fáciles. Así se construye la base."
  },
  "logro_s2026-10-30": {
   "desc": "Fuerza B + caminata",
@@ -101,9 +111,17 @@
   "desc": "26 km en 5:1, últimos 4 km a ritmo maratón",
   "texto": "¡Objetivo cumplido! 26 kilómetros de largo. Cada largo así es un ladrillo de tu maratón."
  },
+ "logro_s2026-11-03": {
+  "desc": "5 km fácil",
+  "texto": "¡Objetivo cumplido! 5 kilómetros fáciles. Así se construye la base."
+ },
  "logro_s2026-11-04": {
   "desc": "Intervalos: 2 km cal + 5 × 1 km (rec 2 min trote) + 2 km",
   "texto": "¡Objetivo cumplido! 5 intervalos completos. Esto es lo que te hace más rápido."
+ },
+ "logro_s2026-11-05": {
+  "desc": "6 km fácil",
+  "texto": "¡Objetivo cumplido! 6 kilómetros fáciles. Así se construye la base."
  },
  "logro_s2026-11-06": {
   "desc": "Fuerza B",
@@ -200,6 +218,10 @@
  "obj_s2026-11-05": {
   "desc": "6 km fácil",
   "texto": "Objetivo de hoy: 6 kilómetros fáciles, entre diez quince y once en punto. Que se sienta suave: si puedes platicar, vas bien."
+ },
+ "obj_s2026-11-06": {
+  "desc": "Fuerza B",
+  "texto": "Objetivo de hoy: fuerza B. Técnica limpia en cada repetición."
  },
  "obj_s2026-11-07": {
   "desc": "Bici 40 min",
@@ -382,5 +404,29 @@
  },
  "serie_6": {
   "texto": "Serie seis."
+ },
+ "serie_7": {
+  "texto": "Serie siete."
+ },
+ "serie_8": {
+  "texto": "Serie ocho."
+ },
+ "serie_9": {
+  "texto": "Serie nueve."
+ },
+ "toma_1": {
+  "texto": "Toca tomar. Un sorbo de tu botella, y que lleve sal."
+ },
+ "toma_n": {
+  "texto": "Toca tomar otra vez. No esperes a tener sed."
+ },
+ "ultima_serie": {
+  "texto": "Última serie."
+ },
+ "ultimo_km": {
+  "texto": "Último kilómetro. Termina como empezaste: controlado."
+ },
+ "ultimo_km_largo": {
+  "texto": "Último kilómetro. Este es el que se recuerda."
  }
 }
