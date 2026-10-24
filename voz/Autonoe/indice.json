@@ -1,4 +1,19 @@
 {
+ "cierre": {
+  "texto": "Ahora come, hidrátate y estira."
+ },
+ "cuarto_1": {
+  "texto": "Un cuarto hecho."
+ },
+ "cuarto_2": {
+  "texto": "Mitad."
+ },
+ "cuarto_3": {
+  "texto": "Tres cuartos. Lo que queda ya es tuyo."
+ },
+ "fin": {
+  "texto": "Listo. Buen trabajo. Ahora come, hidrátate y estira."
+ },
  "fin_carrera": {
   "texto": "¡Eres maratonista! Disfruta este momento: te lo ganaste kilómetro a kilómetro."
  },
@@ -14,20 +29,50 @@
  "hito_35": {
   "texto": "Treinta y cinco. Quedan siete. Un rodaje de los de entre semana: de esos tienes cientos."
  },
+ "hito_40": {
+  "texto": "Cuarenta. Ya no hay que administrar nada. Ve por ella."
+ },
+ "hito_42": {
+  "texto": "Faltan ciento noventa y cinco metros. Levanta la cabeza y disfrútalo."
+ },
+ "inicio_51": {
+  "texto": "Cinco y uno desde el principio, y toma en la primera caminata."
+ },
+ "inicio_bici": {
+  "texto": "Bici de recuperación. Piernas sueltas, resistencia baja."
+ },
  "inicio_calidad": {
   "texto": "Sesión de calidad. El calentamiento es parte del trabajo: no lo recortes. Lo fuerte es controlado, nunca al cien."
+ },
+ "inicio_caminata": {
+  "texto": "Caminata de recuperación. El pulso manda, no el ritmo."
  },
  "inicio_carrera": {
   "texto": "Maratón de Monterrey. Dieciocho semanas para llegar aquí. Cinco y uno desde el kilómetro uno, aunque te sientas increíble. La carrera empieza en el treinta; hasta entonces, ahorra. ¡Vamos!"
  },
+ "inicio_correr": {
+  "texto": "Arrancamos. Disfrútalo."
+ },
+ "inicio_ensayo": {
+  "texto": "Ensayo general: hoy suenan tus apoyos."
+ },
  "inicio_facil": {
   "texto": "Rodaje fácil. Si puedes platicar, vas bien. Lo fácil es lo que te deja hacer lo difícil."
+ },
+ "inicio_fuerza": {
+  "texto": "Fuerza. Técnica primero; la carga después."
  },
  "inicio_largo": {
   "texto": "Hoy toca largo. Hoy no se gana nada yendo rápido: se gana terminando entero."
  },
+ "logro_lento": {
+  "texto": "El ritmo quedó arriba del rango. Si fue por el pulso, bien hecho."
+ },
  "logro_parcial": {
   "texto": "Hoy no salió completo, y está bien. Lo que cuenta es la semana, no un día."
+ },
+ "logro_rango": {
+  "texto": "Y dentro de tu rango: así se entrena."
  },
  "logro_rapido": {
   "texto": "Eso sí, más rápido de lo que tocaba. La próxima, guárdalo."
@@ -115,10 +160,6 @@
  "logro_s2026-12-06": {
   "desc": "16 km en 5:1 muy suave",
   "texto": "¡Objetivo cumplido! 16 kilómetros de largo. Cada largo así es un ladrillo de tu maratón."
- },
- "obj_s2026-10-22": {
-  "desc": "5 km fácil",
-  "texto": "Objetivo de hoy: 5 kilómetros fáciles, entre diez quince y once en punto. Que se sienta suave: si puedes platicar, vas bien."
  },
  "obj_s2026-10-25": {
   "desc": "16 km en 5:1 suave",
