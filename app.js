@@ -18,9 +18,19 @@
     facil:    { label: 'Rodaje fácil',   color: 'var(--series-1)' },
     calidad:  { label: 'Calidad',        color: 'var(--warning)' },
     largo:    { label: 'Tirada larga',   color: 'var(--good)' },
-    cruzado:  { label: 'Cruzado + fuerza', color: 'var(--ink-muted)' },
+    cruzado:  { label: 'Cruzado',        color: 'var(--ink-muted)' },
     carrera:  { label: 'CARRERA',        color: 'var(--race)' },
   };
+
+  /* El nombre del día. Los cruzados no son todos iguales: unos son solo
+     cardio ("Bici 40 min"), otros cardio + fuerza, y los viernes "Fuerza B"
+     no traen cardio. Llamarlos a todos "Cruzado + fuerza" hacía buscar una
+     bici que no estaba en el plan. */
+  function etiqueta(s) {
+    if (s.type !== 'cruzado') return TIPO[s.type].label;
+    if (!/bici|el[íi]ptica|caminata/i.test(s.desc || '')) return 'Día de fuerza';
+    return s.fuerza ? 'Cruzado + fuerza' : 'Cruzado';
+  }
 
   const RPE = ['', 'muy suave', 'suave', 'cómodo', 'ligero', 'normal',
                'algo duro', 'duro', 'muy duro', 'al límite', 'máximo'];
@@ -492,6 +502,23 @@
     </details>`;
   }
 
+  /* Lo que toca hoy en un día cruzado: en orden, y cómo arrancar cada parte
+     en el reloj. Va antes de la guía porque es lo primero que se busca. */
+  function cruzadoHTML(s) {
+    const c = typeof cruzadoDe === 'function' ? cruzadoDe(s) : null;
+    if (!c || !c.pasos.length) return '';
+    return `<div class="hoy-toca">
+      <p class="pace-l">${c.pasos.length > 1 ? 'Hoy toca, en este orden' : 'Hoy toca'}</p>
+      <ol class="ht-lista">${c.pasos.map(p => `<li class="ht-paso">
+        <span class="ht-que">${esc(p.que)}</span>
+        <span class="ht-como">${esc(p.como)}</span>
+        <span class="ht-reloj">${esc(p.reloj)}</span>
+        ${p.planB ? `<span class="ht-b">${esc(p.planB)}</span>` : ''}
+      </li>`).join('')}</ol>
+      ${c.soloFuerza ? '<p class="ht-nota">Hoy no hay bici ni caminata. Si el reloj solo muestra la fuerza, no falta nada.</p>' : ''}
+    </div>`;
+  }
+
   function guiaHTML(s) {
     if (typeof guiaDe !== 'function') return '';
     const gs = guiaDe(s);
@@ -541,19 +568,21 @@
       const done = isDone(s.id);
       const e = log[s.id];
       const isRest = s.type === 'descanso' || s.type === 'cruzado';
+      const ht = cruzadoHTML(s);
 
       html += `<div class="card">
         <p class="eyebrow">Hoy · ${s.dow} ${fmtCorto(s.date)} · Semana ${s.week.num} de ${PLAN.weeks.length}</p>
-        <div class="hero-type" style="color:${cfg.color}">${cfg.label}</div>
+        <div class="hero-type" style="color:${cfg.color}">${etiqueta(s)}</div>
         ${s.km > 0 ? `<div class="hero-km">${fmtKm(s.km)}<small>km</small></div>` : ''}
         <p class="hero-desc">${esc(s.desc)}</p>
         ${s.pace ? `<div class="pace-box">
           <span class="pace-l">Ritmo objetivo</span>
           <span class="pace-v">${esc(paceCompleto(s.pace))}</span>
         </div>` : ''}
-        ${s.fuerza ? `<div class="pace-box pace-alt">
+        ${ht}
+        ${s.fuerza && !ht ? `<div class="pace-box pace-alt">
           <span class="pace-l">Además hoy</span>
-          <span class="pace-v">Fuerza ${s.fuerza} · 30–35 min, después de correr</span>
+          <span class="pace-v">Fuerza ${s.fuerza} · 45–55 min${s.km > 0 ? ', después de correr' : ''}</span>
         </div>` : ''}
         ${s.week.num <= 9 && s.km > 0 ? `<p class="note note-warn">${esc(PLAN.calor)}</p>` : ''}
         ${guiaHTML(s)}
@@ -636,7 +665,7 @@
         <span class="day-num">${d.getDate()}</span>
       </span>
       <span class="day-body">
-        <span class="day-type">${cfg.label}${s.fuerza
+        <span class="day-type">${etiqueta(s)}${s.fuerza
           ? `<span class="chip-f ${fz ? 'is-ok' : ''}">Fuerza ${s.fuerza}${fz ? ' ✓' : ''}</span>` : ''}</span>
         <span class="day-desc">${esc(s.desc)}</span>
         ${s.pace ? `<span class="day-pace">${esc(paceCompleto(s.pace))}</span>` : ''}
@@ -1166,7 +1195,7 @@
         const km = e.km ? `${fmtKm(e.km)} km` : '';
         const ev = s.type === 'carrera'
           ? `Maratón Monterrey — ${km}`
-          : `Entrenamiento: ${TIPO[s.type].label}${km ? ' ' + km : ''}`;
+          : `Entrenamiento: ${etiqueta(s)}${km ? ' ' + km : ''}`;
         const partes = [];
         if (e.timeMin) partes.push(`${e.timeMin} min`);
         const r = ritmoReal(e);
@@ -1389,15 +1418,15 @@
     const e = log[id] || {};
     const rest = s.type === 'descanso' || s.type === 'cruzado';
 
-    document.getElementById('sheet-title').textContent = TIPO[s.type].label;
+    document.getElementById('sheet-title').textContent = etiqueta(s);
     document.getElementById('sheet-sub').textContent =
       `${s.dow} ${fmtCorto(s.date)}${s.km > 0 ? ` · plan: ${fmtKm(s.km)} km` : ''}` +
       (s.pace ? ` · ${s.pace}` : '');
     const sd = document.getElementById('sheet-desc');
-    sd.textContent = s.desc + (s.fuerza ? ` · Fuerza ${s.fuerza} después de correr.` : '');
+    sd.textContent = s.desc + (s.fuerza && s.km > 0 ? ` · Fuerza ${s.fuerza} después de correr.` : '');
     sd.hidden = false;
     // El cómo, debajo del qué: se abre desde cualquier día de la semana.
-    document.getElementById('sheet-guia').innerHTML = guiaHTML(s);
+    document.getElementById('sheet-guia').innerHTML = cruzadoHTML(s) + guiaHTML(s);
     document.getElementById('f-km').value = e.km != null ? e.km : (rest ? '' : s.km);
     document.getElementById('f-time').value = e.timeMin != null ? e.timeMin : '';
     document.getElementById('f-fc').value = e.fcMedia != null ? e.fcMedia : '';

@@ -23,6 +23,9 @@ const _SENS = (nombre) => {
    PLAN.zonas en vez de contra un texto fijo, para que siga funcionando si un
    día se recalibran las zonas. Sirve para reconocer los días de calidad cuyo
    rodaje base va en fácil. */
+/* Lo que hace de un día "cruzado" un día de cardio. Sin esto, los viernes de
+   solo fuerza (type cruzado, desc "Fuerza B") pintaban la guía de la bici. */
+const _CARDIO = /bici|el[íi]ptica|caminata/i;
 const _EN_ZONA = (s, nombre) => {
   const z = ((typeof PLAN !== 'undefined' && PLAN.zonas) || []).find(x => x.zona === nombre);
   return !!(z && s.pace && s.pace.indexOf(z.minkm) === 0);
@@ -204,15 +207,35 @@ const GUIA = [
   {
     id: 'cruzado',
     titulo: 'Cruzado (bici, elíptica, caminata)',
-    cuando: s => s.type === 'cruzado' || /bici|el[íi]ptica|caminata/i.test(s.desc || ''),
-    que: `Trabajo aeróbico sin impacto. Suma circulación y recuperación sin sumar el golpe repetido de la carrera.`,
+    // Los viernes "Fuerza B" también son type cruzado, pero no traen cardio:
+    // esos los cubre 'solo-fuerza'. Los descansos con "o caminata" los cubre
+    // 'descanso'.
+    cuando: s => s.type !== 'descanso' && _CARDIO.test(s.desc || ''),
+    que: `Trabajo aeróbico sin impacto: suma circulación y recuperación sin sumar el golpe repetido de la carrera. Cuando el plan da a elegir ("bici o elíptica"), no da igual: el orden es bici, luego elíptica, luego caminata.`,
     pasos: [
-      'Esfuerzo de zona recuperación o fácil: deberías poder hablar todo el rato.',
-      'En bici, cadencia alta y resistencia baja — piernas girando sueltas, no empujando fuerte.',
-      'La caminata cuenta como sesión: rápida y sostenida, no un paseo con paradas.',
+      'Cuál hacer: bici (fija, spinning o calle plana). Si no tienes bici, elíptica. Si no tienes ninguna, caminata a paso vivo. Siempre los minutos que marca el plan.',
+      'Tu app del reloj no la trae programada: solo programa la fuerza y las carreras. Iníciala tú en la app Entrenamiento del Apple Watch — Ciclismo en interiores, Elíptica o Caminata al aire libre → toca ⋯ → Tiempo → los minutos del día. El reloj te avisa al cumplirlos y queda en Salud.',
+      'Esfuerzo 3–4 de 10: puedes hablar todo el rato. No hay ritmo objetivo — aquí manda la sensación, no la velocidad.',
+      'En bici: cadencia alta (80–90 pedaladas por minuto) y resistencia baja — piernas girando sueltas, no empujando fuerte.',
+      'Caminando: paso vivo y sostenido, unos 5 km/h, sin paradas. Cuenta como sesión, no es un paseo.',
+      'Si el día también trae fuerza: primero la bici o la caminata (te sirve de calentamiento), después la fuerza.',
+      'Al terminar, márcala hecha aquí con los minutos y el esfuerzo.',
     ],
-    porque: 'Mueve sangre a las piernas y acelera la reparación entre sesiones duras, sin añadir carga de impacto.',
+    porque: 'La bici va primero porque es la que menos carga el gemelo y el sóleo, tu punto débil: en la elíptica vas de puntas y el gemelo trabaja más. Las tres mueven sangre a las piernas y aceleran la reparación entre sesiones duras.',
     ojo: 'Si terminas cansado, no fue recuperación: fue otro entrenamiento, y mañana lo vas a pagar.',
+  },
+  {
+    id: 'solo-fuerza',
+    titulo: 'Día de fuerza (sin cardio)',
+    cuando: s => s.type === 'cruzado' && !!s.fuerza && !_CARDIO.test(s.desc || ''),
+    que: `Hoy no hay bici, elíptica ni caminata: la sesión del día es solo la fuerza. Si tu app del reloj solo muestra la fuerza, está bien — no falta nada.`,
+    pasos: [
+      'Haz la rutina completa, calentamiento incluido. Los ejercicios y tus cargas están más abajo en esta misma pantalla.',
+      'Regístrala en el reloj con tu app de fuerza, o en Entrenamiento → Fuerza tradicional.',
+      'No le agregues cardio por tu cuenta aunque te sobre energía: el domingo es la tirada larga y tiene que llegar con las piernas frescas.',
+    ],
+    porque: 'Separar la fuerza de los días de carrera deja que cada estímulo se recupere por su lado.',
+    ojo: 'Cuando dice "ligera" (semanas 16 y 17): mismos ejercicios, la mitad de las series o menos carga. Es mantenimiento, no progresión.',
   },
   {
     id: 'descanso',
@@ -234,9 +257,9 @@ const GUIA = [
     id: 'fuerza',
     titulo: 'La sesión de fuerza',
     cuando: s => !!s.fuerza,
-    que: `Entre 30 y 35 minutos de fuerza, DESPUÉS de correr. Los ejercicios, series y cargas están más abajo en esta misma pantalla, con el peso que usaste la última vez.`,
+    que: `Entre 45 y 55 minutos de fuerza, DESPUÉS de correr o del cardio del día. Los ejercicios, series y cargas están más abajo en esta misma pantalla, con el peso que usaste la última vez.`,
     pasos: [
-      'Primero correr, luego fuerza. Al revés llegas al rodaje con la pierna ya fatigada y pierde calidad.',
+      'Primero correr (o la bici, o la caminata), luego fuerza. Al revés llegas al rodaje con la pierna ya fatigada y pierde calidad.',
       'Técnica antes que peso. Sube la carga solo cuando completes todas las repeticiones limpias.',
       'Anota kilos y repeticiones al terminar cada ejercicio: sin ese registro no hay progresión, solo repetición.',
     ],
@@ -282,7 +305,7 @@ const GUIA = [
 const _PRIO = [
   'carrera', 'simulacro', 'rectas', 'progresivo', 'tempo', 'intervalos',
   'cuatrocientos', 'ritmo-maraton', 'cinco-uno', 'largo', 'geles',
-  'facil', 'cruzado', 'descanso', 'fuerza', 'carbos',
+  'facil', 'cruzado', 'solo-fuerza', 'descanso', 'fuerza', 'carbos',
 ];
 
 /* Devuelve las guías que aplican a una sesión, máximo 5 y por prioridad. */
@@ -295,6 +318,54 @@ function guiaDe(s) {
   }
   const p = g => { const i = _PRIO.indexOf(g.id); return i === -1 ? _PRIO.length : i; };
   return out.sort((a, b) => p(a) - p(b)).slice(0, 5);
+}
+
+/* ── El día cruzado, en concreto ─────────────────────────────────────────
+   La guía 'cruzado' explica en general; esto dice qué toca HOY, en orden y
+   cómo arrancarlo en el reloj. Existe porque plan.js dice "Bici o elíptica
+   40 min" o "Fuerza B + caminata" (sin minutos), y eso dejaba la decisión
+   abierta; y porque la app del reloj solo trae programada la fuerza, así que
+   la parte de cardio hay que iniciarla a mano.
+
+   Orden del array = preferencia: si el plan da a elegir, gana el primero. */
+const _MODOS = [
+  { re: /bici/i, n: 'Bici', reloj: 'Ciclismo en interiores',
+    como: 'cadencia alta, resistencia baja',
+    planB: '¿Sin bici? Elíptica. ¿Sin ninguna? Caminata a paso vivo. Mismos minutos.' },
+  { re: /el[íi]ptica/i, n: 'Elíptica', reloj: 'Elíptica',
+    como: 'ritmo parejo, resistencia baja',
+    planB: '¿Sin elíptica? Caminata a paso vivo, mismos minutos.' },
+  { re: /caminata/i, n: 'Caminata', reloj: 'Caminata al aire libre',
+    como: 'paso vivo, unos 5 km/h, sin paradas', planB: '' },
+];
+
+/* { pasos: [{ que, como, reloj, planB }], soloFuerza } o null si no es cruzado. */
+function cruzadoDe(s) {
+  if (!s || s.type !== 'cruzado') return null;
+  const d = s.desc || '';
+  const pasos = [];
+  const m = _MODOS.find(x => x.re.test(d));
+  if (m) {
+    // "Fuerza B + caminata" no trae minutos. Un número y no un rango, porque
+    // el reloj pide uno; 25 deja la sesión en algo más de una hora con la fuerza.
+    const min = (d.match(/(\d+)\s*min/) || [])[1] || (s.fuerza ? '25' : '30');
+    pasos.push({
+      que: `${m.n} · ${min} min`,
+      como: `${m.como} · esfuerzo 3–4 de 10, puedes hablar`,
+      reloj: `Inícialo tú: Entrenamiento → ${m.reloj} → ⋯ → Tiempo → ${min} min`,
+      planB: m.planB,
+    });
+  }
+  if (s.fuerza) {
+    const ligera = /ligera/i.test(d);
+    pasos.push({
+      que: `Fuerza ${s.fuerza}${ligera ? ' ligera' : ''}`,
+      como: ligera ? 'mismos ejercicios, la mitad de las series' : '45–55 min, calentamiento incluido',
+      reloj: 'Ya viene programada en tu app del reloj',
+      planB: '',
+    });
+  }
+  return { pasos, soloFuerza: !m };
 }
 
 /* ── Cómo se ejecuta cada ejercicio de fuerza ──────────────────────────────
