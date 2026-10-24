@@ -1,0 +1,17 @@
+{
+ "porDefecto": "Autonoe",
+ "voces": [
+  {
+   "nombre": "Autonoe",
+   "descripcion": "Mujer, energética",
+   "total": 280,
+   "listos": 81
+  },
+  {
+   "nombre": "Charon",
+   "descripcion": "Hombre, cálido y tranquilo",
+   "total": 280,
+   "listos": 73
+  }
+ ]
+}
