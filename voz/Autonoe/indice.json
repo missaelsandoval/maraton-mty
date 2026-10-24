@@ -335,7 +335,52 @@
  "plan_terminado": {
   "texto": "Terminaste lo del plan. Sigue suave o termina cuando quieras."
  },
+ "primera_caminata": {
+  "texto": "Primera caminata. Aquí se toma: un sorbo y algo de sal."
+ },
+ "pulso_alto": {
+  "texto": "Pulso alto. Afloja."
+ },
  "pulso_tarde": {
   "texto": "Casi dos horas. Aquí es donde el pulso se te ha subido. Si sube, alarga la caminata. No lo pelees: el maratón se gana guardando."
+ },
+ "rango_dentro": {
+  "texto": "Vas dentro del rango. Así se queda."
+ },
+ "rango_lento": {
+  "texto": "Vas un poco arriba del rango. Si el pulso lo pide, está bien así."
+ },
+ "rango_rapido": {
+  "texto": "Vas más rápido de lo que toca. Guárdalo para después."
+ },
+ "rango_sin": {
+  "texto": "Revisa cómo vas: hombros sueltos, pasos cortos."
+ },
+ "ritmo_lento": {
+  "texto": "Vas lento. Sube un poco."
+ },
+ "ritmo_rapido": {
+  "texto": "Vas rápido. Baja un poco."
+ },
+ "serie_1": {
+  "texto": "Primera serie."
+ },
+ "serie_10": {
+  "texto": "Serie diez."
+ },
+ "serie_2": {
+  "texto": "Serie dos."
+ },
+ "serie_3": {
+  "texto": "Serie tres."
+ },
+ "serie_4": {
+  "texto": "Serie cuatro."
+ },
+ "serie_5": {
+  "texto": "Serie cinco."
+ },
+ "serie_6": {
+  "texto": "Serie seis."
  }
 }
