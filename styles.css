@@ -1,5 +1,11 @@
 /* ── Tokens ─────────────────────────────────────────────────
-   Paleta de referencia dataviz. Modo oscuro escalonado, no invertido. */
+   Colores del logo 42K (atardecer sobre la Sierra Madre), los mismos del reloj y
+   de la app del iPhone (Compartido/Marca.swift). Unificados el 25-oct-2026.
+   En modo claro cada uno va oscurecido sin cambiar de tono, hasta leerse sobre
+   blanco (contraste ≥ 4.5); en oscuro, tal cual el logo.
+   Por tipo de sesión: fácil amarillo · calidad dorado · largo coral ·
+   carrera magenta · cruzado lavanda. Con significado (no decoran): en rango
+   verde · rápido naranja · lento cian · alerta rojo. Acento de la app: coral. */
 :root {
   color-scheme: light;
   --surface-1:   #fcfcfb;
@@ -10,12 +16,20 @@
   --grid:        #e1e0d9;
   --axis:        #c3c2b7;
   --ring:        rgba(11,11,11,.10);
-  --series-1:    #2a78d6;   /* real / progreso */
-  --good:        #0ca30c;
-  --good-text:   #006300;
-  --warning:     #fab219;
+  --series-1:    #c8432a;   /* acento: coral del logo (real / progreso, botones) */
+  --series-2:    #b8456f;   /* segunda serie: magenta */
+  --on-accent:   #ffffff;   /* texto sobre el acento y sobre el verde */
+  --facil:       #a26700;   /* amarillo */
+  --calidad:     #bb5604;   /* dorado */
+  --largo:       #c8432a;   /* coral */
+  --race:        #b8456f;   /* magenta */
+  --cruzado:     #7c6aac;   /* lavanda */
+  --good:        #1d8336;
+  --good-text:   #1d8336;
+  --rapido:      #b54708;
+  --lento:       #007aab;
+  --warning:     var(--rapido);
   --critical:    #d03b3b;
-  --race:        #4a3aa7;
 
   --r-sm: 8px;
   --r-md: 12px;
@@ -34,9 +48,19 @@
     --grid:      #2c2c2a;
     --axis:      #383835;
     --ring:      rgba(255,255,255,.10);
-    --series-1:  #3987e5;
-    --good-text: #0ca30c;
-    --race:      #9085e9;
+    --series-1:  #fe7156;
+    --series-2:  #d35e7f;
+    --on-accent: #161b3b;   /* noche del logo: el blanco no se lee sobre coral claro */
+    --facil:     #ffc156;
+    --calidad:   #fb8b2f;
+    --largo:     #fe7156;
+    --race:      #d35e7f;
+    --cruzado:   #9c8ec0;
+    --good:      #30d158;
+    --good-text: #30d158;
+    --rapido:    #ff9f0a;
+    --lento:     #64d2ff;
+    --critical:  #ff453a;
   }
 }
 
@@ -114,7 +138,7 @@ h2.section-h { font-size: 15px; font-weight: 650; margin: 20px 0 8px; }
   transition: opacity .15s;
 }
 .btn:active { opacity: .7; }
-.btn-primary { background: var(--series-1); color: #fff; }
+.btn-primary { background: var(--series-1); color: var(--on-accent); }
 .btn-ghost   { background: transparent; color: var(--ink-2); border-color: var(--ring); }
 .btn-danger  { background: transparent; color: var(--critical); border-color: color-mix(in srgb, var(--critical) 35%, transparent); }
 .btn-block   { width: 100%; }
@@ -272,17 +296,17 @@ h2.section-h { font-size: 15px; font-weight: 650; margin: 20px 0 8px; }
 /* Veredicto ritmo vs zona, suelto: lo usa la lista de largos en Progreso,
    donde el span no cuelga de .day-vs ni de .ritmo-vs. */
 .es-dentro { color: var(--good); }
-.es-rapido { color: var(--warning); }
-.es-lento  { color: var(--ink-muted); }
+.es-rapido { color: var(--rapido); }
+.es-lento  { color: var(--lento); }
 
 .day-vs.es-dentro { color: var(--good); }
-.day-vs.es-rapido { color: var(--warning); }
-.day-vs.es-lento  { color: var(--ink-muted); }
+.day-vs.es-rapido { color: var(--rapido); }
+.day-vs.es-lento  { color: var(--lento); }
 .day-plan {
   display: block; font-size: 10.5px; font-weight: 500; color: var(--ink-muted);
   margin-top: 1px; white-space: nowrap;
 }
-.chip-f.is-ok { background: var(--good); color: #fff; }
+.chip-f.is-ok { background: var(--good); color: var(--on-accent); }
 
 /* Ritmo en vivo dentro de la hoja de captura */
 .ritmo-box {
@@ -293,7 +317,8 @@ h2.section-h { font-size: 15px; font-weight: 650; margin: 20px 0 8px; }
 .ritmo-real { font-size: 15px; font-weight: 700; font-variant-numeric: tabular-nums; }
 .ritmo-vs { font-size: 12px; font-weight: 650; color: var(--ink-muted); text-align: right; }
 .ritmo-vs.es-dentro { color: var(--good); }
-.ritmo-vs.es-rapido { color: var(--warning); }
+.ritmo-vs.es-rapido { color: var(--rapido); }
+.ritmo-vs.es-lento  { color: var(--lento); }
 
 /* Bloque de fuerza */
 .fza-t {
@@ -347,7 +372,7 @@ h2.section-h { font-size: 15px; font-weight: 650; margin: 20px 0 8px; }
   font-size: 12px; font-weight: 700; margin-left: 6px; padding: 1px 5px;
   border-radius: 4px; vertical-align: 1px;
 }
-.fza-delta.sube { background: var(--good); color: #fff; }
+.fza-delta.sube { background: var(--good); color: var(--on-accent); }
 .fza-delta.baja { background: var(--grid); color: var(--ink-muted); }
 
 /* Enlace a la técnica del ejercicio. Área de toque de 44 px vía padding
@@ -409,7 +434,7 @@ h2.section-h { font-size: 15px; font-weight: 650; margin: 20px 0 8px; }
   border: 1.5px solid var(--axis);
   display: grid; place-items: center; font-size: 12px; color: transparent;
 }
-.day-check.is-done { background: var(--good); border-color: var(--good); color: #fff; }
+.day-check.is-done { background: var(--good); border-color: var(--good); color: var(--on-accent); }
 .day.is-rest .day-type, .day.is-rest .day-km { color: var(--ink-muted); font-weight: 500; }
 
 /* barra de tipo de sesión */

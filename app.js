@@ -15,10 +15,10 @@
 
   const TIPO = {
     descanso: { label: 'Descanso',       color: 'var(--ink-muted)' },
-    facil:    { label: 'Rodaje fácil',   color: 'var(--series-1)' },
-    calidad:  { label: 'Calidad',        color: 'var(--warning)' },
-    largo:    { label: 'Tirada larga',   color: 'var(--good)' },
-    cruzado:  { label: 'Cruzado + fuerza', color: 'var(--ink-muted)' },
+    facil:    { label: 'Rodaje fácil',   color: 'var(--facil)' },
+    calidad:  { label: 'Calidad',        color: 'var(--calidad)' },
+    largo:    { label: 'Tirada larga',   color: 'var(--largo)' },
+    cruzado:  { label: 'Cruzado + fuerza', color: 'var(--cruzado)' },
     carrera:  { label: 'CARRERA',        color: 'var(--race)' },
   };
 
@@ -880,13 +880,13 @@
 
     return `<h2 class="section-h">Tu cuerpo</h2>
     <div class="card">
-      ${fila('Frecuencia en reposo', fcr, 'fcReposo', 'var(--series-1)',
+      ${fila('Frecuencia en reposo', fcr, 'fcReposo', 'var(--race)',
              v => `${v} ppm`, `base ${base} · alto a partir de ${base + RHR_DELTA}`, base + RHR_DELTA)}
-      ${fila('Peso', pes, 'peso', 'var(--good)',
+      ${fila('Peso', pes, 'peso', 'var(--calidad)',
              v => `${v.toFixed(1)} kg`, 'objetivo dic: 100–103 kg', 103)}
-      ${fila('Sueño', sue, 'suenoMin', 'var(--warning)',
+      ${fila('Sueño', sue, 'suenoMin', 'var(--cruzado)',
              v => fmtSueno(v), 'objetivo 7–8 h', 420)}
-      ${fila('Variabilidad cardiaca', serie('hrv'), 'hrv', 'var(--series-2)',
+      ${fila('Variabilidad cardiaca', serie('hrv'), 'hrv', 'var(--lento)',
              v => `${v.toFixed(1)} ms`, 'más alto es mejor recuperación', null)}
       ${fila('VO2 máx', serie('vo2max'), 'vo2max', 'var(--good)',
              v => `${v.toFixed(1)}`, 'antes del parón: 33.5', 33.5)}
@@ -946,10 +946,10 @@
         return `<div class="cuerpo-f"${viejo ? ' style="opacity:.62"' : ''}>
           <div class="cuerpo-h">
             <span class="cuerpo-t">${esc(ej.n)}</span>
-            <span class="cuerpo-v" style="color:var(--good)">${u.kg} kg${
+            <span class="cuerpo-v" style="color:var(--calidad)">${u.kg} kg${
               d ? `<span class="fza-delta ${d > 0 ? 'sube' : 'baja'}">${d > 0 ? '+' : ''}${d.toFixed(1)}</span>` : ''}</span>
           </div>
-          ${serie.length > 1 ? spark(serie.map(x => x.kg), 'var(--good)', null) : ''}
+          ${serie.length > 1 ? spark(serie.map(x => x.kg), 'var(--calidad)', null) : ''}
           <span class="cuerpo-s">${pl(serie.length, 'sesión', 'sesiones')} ·
             última ${fmtCorto(u.fecha)}${u.reps ? ` · ${u.reps} reps` : ''} ·
             ${viejo ? 'de una rutina que ya no está en el plan' : `objetivo ${esc(ej.obj)}`}</span>
@@ -1020,8 +1020,8 @@
     const W = Math.max(pts.length * STEP, 60);
     const y = d => MID + (d / maxAbs) * (MID - 8);
     const color = p => p.v.estado === 'dentro' ? 'var(--good)'
-                     : p.v.estado === 'lento' ? 'var(--series-1)'
-                     : p.v.delta > 45 ? 'var(--critical)' : 'var(--warning)';
+                     : p.v.estado === 'lento' ? 'var(--lento)'
+                     : p.v.delta > 45 ? 'var(--critical)' : 'var(--rapido)';
 
     let linea = '', puntos = '', ticks = '';
     pts.forEach((p, i) => {
@@ -1040,8 +1040,8 @@
       <p class="eyebrow">Ritmo contra la zona</p>
       <div class="legend">
         <span class="legend-item"><span class="legend-swatch" style="background:var(--good)"></span>En zona</span>
-        <span class="legend-item"><span class="legend-swatch" style="background:var(--warning)"></span>Rápido</span>
-        <span class="legend-item"><span class="legend-swatch" style="background:var(--series-1)"></span>Lento</span>
+        <span class="legend-item"><span class="legend-swatch" style="background:var(--rapido)"></span>Rápido</span>
+        <span class="legend-item"><span class="legend-swatch" style="background:var(--lento)"></span>Lento</span>
       </div>
       <div class="chart-wrap">
         <svg class="chart" viewBox="0 0 ${W} ${H + 24}" width="${W}" height="${H + 24}" role="img"
