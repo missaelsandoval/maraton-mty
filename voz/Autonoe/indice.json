@@ -203,14 +203,6 @@
  "logro_rapido": {
   "texto": "Eso sí, más rápido de lo que tocaba. La próxima, guárdalo."
  },
- "logro_s2026-10-27": {
-  "desc": "5 km fácil",
-  "texto": "¡Objetivo cumplido! 5 kilómetros fáciles. Así se construye la base."
- },
- "logro_s2026-10-28": {
-  "desc": "Tempo: 2 km cal + 2 × 2 km fuerte (rec 3 min) + 3 km",
-  "texto": "¡Objetivo cumplido! Tempo completo: 2 series de 2 kilómetros a ritmo de umbral. Esto es lo que te hace más rápido."
- },
  "logro_s2026-10-29": {
   "desc": "6 km fácil",
   "texto": "¡Objetivo cumplido! 6 kilómetros fáciles. Así se construye la base."
@@ -346,14 +338,6 @@
  "logro_s2026-12-13": {
   "desc": "MARATÓN — 6:45 AM · 5:1 desde el kilómetro 1",
   "texto": "¡Lo lograste! Cuarenta y dos kilómetros. Monterrey es tuyo."
- },
- "obj_s2026-10-27": {
-  "desc": "5 km fácil",
-  "texto": "Objetivo de hoy: 5 kilómetros fáciles, entre diez quince y once en punto. Que se sienta suave: si puedes platicar, vas bien."
- },
- "obj_s2026-10-28": {
-  "desc": "Tempo: 2 km cal + 2 × 2 km fuerte (rec 3 min) + 3 km",
-  "texto": "Objetivo de hoy: tempo. 2 series de 2 kilómetros a ritmo de umbral, entre ocho en punto y ocho veinte, con calentamiento y enfriamiento. Fuerte, pero controlado."
  },
  "obj_s2026-10-29": {
   "desc": "6 km fácil",
@@ -655,6 +639,102 @@
  },
  "ultimo_11_30": {
   "texto": "Último en once treinta."
+ },
+ "ultimo_7_20": {
+  "texto": "Último en siete veinte."
+ },
+ "ultimo_7_25": {
+  "texto": "Último en siete veinticinco."
+ },
+ "ultimo_7_30": {
+  "texto": "Último en siete treinta."
+ },
+ "ultimo_7_35": {
+  "texto": "Último en siete treinta y cinco."
+ },
+ "ultimo_7_40": {
+  "texto": "Último en siete cuarenta."
+ },
+ "ultimo_7_45": {
+  "texto": "Último en siete cuarenta y cinco."
+ },
+ "ultimo_7_50": {
+  "texto": "Último en siete cincuenta."
+ },
+ "ultimo_7_55": {
+  "texto": "Último en siete cincuenta y cinco."
+ },
+ "ultimo_8_00": {
+  "texto": "Último en ocho en punto."
+ },
+ "ultimo_8_05": {
+  "texto": "Último en ocho cero cinco."
+ },
+ "ultimo_8_10": {
+  "texto": "Último en ocho diez."
+ },
+ "ultimo_8_15": {
+  "texto": "Último en ocho quince."
+ },
+ "ultimo_8_20": {
+  "texto": "Último en ocho veinte."
+ },
+ "ultimo_8_25": {
+  "texto": "Último en ocho veinticinco."
+ },
+ "ultimo_8_30": {
+  "texto": "Último en ocho treinta."
+ },
+ "ultimo_8_35": {
+  "texto": "Último en ocho treinta y cinco."
+ },
+ "ultimo_8_40": {
+  "texto": "Último en ocho cuarenta."
+ },
+ "ultimo_8_45": {
+  "texto": "Último en ocho cuarenta y cinco."
+ },
+ "ultimo_8_50": {
+  "texto": "Último en ocho cincuenta."
+ },
+ "ultimo_8_55": {
+  "texto": "Último en ocho cincuenta y cinco."
+ },
+ "ultimo_9_00": {
+  "texto": "Último en nueve en punto."
+ },
+ "ultimo_9_05": {
+  "texto": "Último en nueve cero cinco."
+ },
+ "ultimo_9_10": {
+  "texto": "Último en nueve diez."
+ },
+ "ultimo_9_15": {
+  "texto": "Último en nueve quince."
+ },
+ "ultimo_9_20": {
+  "texto": "Último en nueve veinte."
+ },
+ "ultimo_9_25": {
+  "texto": "Último en nueve veinticinco."
+ },
+ "ultimo_9_30": {
+  "texto": "Último en nueve treinta."
+ },
+ "ultimo_9_35": {
+  "texto": "Último en nueve treinta y cinco."
+ },
+ "ultimo_9_40": {
+  "texto": "Último en nueve cuarenta."
+ },
+ "ultimo_9_45": {
+  "texto": "Último en nueve cuarenta y cinco."
+ },
+ "ultimo_9_50": {
+  "texto": "Último en nueve cincuenta."
+ },
+ "ultimo_9_55": {
+  "texto": "Último en nueve cincuenta y cinco."
  },
  "ultimo_km": {
   "texto": "Último kilómetro. Termina como empezaste: controlado."
