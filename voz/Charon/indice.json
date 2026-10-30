@@ -101,6 +101,14 @@
  "logro_rapido": {
   "texto": "Eso sí, más rápido de lo que tocaba. La próxima, guárdalo."
  },
+ "logro_s2026-10-30": {
+  "desc": "Fuerza B + caminata",
+  "texto": "¡Objetivo cumplido! Fuerza hecha. Unas piernas fuertes aguantan el kilómetro treinta."
+ },
+ "logro_s2026-10-31": {
+  "desc": "Bici 40 min",
+  "texto": "¡Objetivo cumplido! 40 minutos de bici. La recuperación también es entrenamiento."
+ },
  "logro_s2026-11-04": {
   "desc": "Intervalos: 2 km cal + 5 × 1 km (rec 2 min trote) + 2 km",
   "texto": "¡Objetivo cumplido! 5 intervalos completos. Esto es lo que te hace más rápido."
@@ -109,6 +117,18 @@
   "desc": "Fuerza B",
   "texto": "¡Objetivo cumplido! Fuerza hecha. Unas piernas fuertes aguantan el kilómetro treinta."
  },
+ "logro_s2026-11-08": {
+  "desc": "29 km en 5:1, últimos 5 km a ritmo maratón",
+  "texto": "¡Objetivo cumplido! 29 kilómetros de largo. Cada largo así es un ladrillo de tu maratón."
+ },
+ "obj_s2026-10-30": {
+  "desc": "Fuerza B + caminata",
+  "texto": "Objetivo de hoy: fuerza B. Técnica limpia en cada repetición. Y después, una caminata suave para soltar."
+ },
+ "obj_s2026-10-31": {
+  "desc": "Bici 40 min",
+  "texto": "Objetivo de hoy: 40 minutos de bici suave, con el pulso abajo de ciento veinticinco. Recuperar, no cansarte."
+ },
  "obj_s2026-11-04": {
   "desc": "Intervalos: 2 km cal + 5 × 1 km (rec 2 min trote) + 2 km",
   "texto": "Objetivo de hoy: intervalos. 5 series de 1 kilómetro, entre siete quince y siete cuarenta y cinco, con 2 minutos de trote entre cada una. Fuerte, pero que la última salga igual que la primera."
@@ -116,6 +136,18 @@
  "obj_s2026-11-05": {
   "desc": "6 km fácil",
   "texto": "Objetivo de hoy: 6 kilómetros fáciles, entre diez quince y once en punto. Que se sienta suave: si puedes platicar, vas bien."
+ },
+ "obj_s2026-11-07": {
+  "desc": "Bici 40 min",
+  "texto": "Objetivo de hoy: 40 minutos de bici suave, con el pulso abajo de ciento veinticinco. Recuperar, no cansarte."
+ },
+ "obj_s2026-11-08": {
+  "desc": "29 km en 5:1, últimos 5 km a ritmo maratón",
+  "texto": "Objetivo de hoy: 29 kilómetros de trote y caminata, cinco y uno, con los últimos 5 a ritmo maratón. Promedio entre ocho cuarenta y siete y nueve quince. Lo importante es terminar entero."
+ },
+ "obj_s2026-11-10": {
+  "desc": "5 km fácil",
+  "texto": "Objetivo de hoy: 5 kilómetros fáciles, entre diez quince y once en punto. Que se sienta suave: si puedes platicar, vas bien."
  },
  "paso_bici": {
   "texto": "Bici suave."

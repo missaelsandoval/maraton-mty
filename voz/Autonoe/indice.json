@@ -203,10 +203,6 @@
  "logro_rapido": {
   "texto": "Eso sí, más rápido de lo que tocaba. La próxima, guárdalo."
  },
- "logro_s2026-10-29": {
-  "desc": "6 km fácil",
-  "texto": "¡Objetivo cumplido! 6 kilómetros fáciles. Así se construye la base."
- },
  "logro_s2026-10-30": {
   "desc": "Fuerza B + caminata",
   "texto": "¡Objetivo cumplido! Fuerza hecha. Unas piernas fuertes aguantan el kilómetro treinta."
@@ -338,10 +334,6 @@
  "logro_s2026-12-13": {
   "desc": "MARATÓN — 6:45 AM · 5:1 desde el kilómetro 1",
   "texto": "¡Lo lograste! Cuarenta y dos kilómetros. Monterrey es tuyo."
- },
- "obj_s2026-10-29": {
-  "desc": "6 km fácil",
-  "texto": "Objetivo de hoy: 6 kilómetros fáciles, entre diez quince y once en punto. Que se sienta suave: si puedes platicar, vas bien."
  },
  "obj_s2026-10-30": {
   "desc": "Fuerza B + caminata",
@@ -639,6 +631,141 @@
  },
  "ultimo_11_30": {
   "texto": "Último en once treinta."
+ },
+ "ultimo_11_35": {
+  "texto": "Último en once treinta y cinco."
+ },
+ "ultimo_11_40": {
+  "texto": "Último en once cuarenta."
+ },
+ "ultimo_11_45": {
+  "texto": "Último en once cuarenta y cinco."
+ },
+ "ultimo_11_50": {
+  "texto": "Último en once cincuenta."
+ },
+ "ultimo_11_55": {
+  "texto": "Último en once cincuenta y cinco."
+ },
+ "ultimo_12_00": {
+  "texto": "Último en doce en punto."
+ },
+ "ultimo_12_05": {
+  "texto": "Último en doce cero cinco."
+ },
+ "ultimo_12_10": {
+  "texto": "Último en doce diez."
+ },
+ "ultimo_12_15": {
+  "texto": "Último en doce quince."
+ },
+ "ultimo_12_20": {
+  "texto": "Último en doce veinte."
+ },
+ "ultimo_12_25": {
+  "texto": "Último en doce veinticinco."
+ },
+ "ultimo_12_30": {
+  "texto": "Último en doce treinta."
+ },
+ "ultimo_12_35": {
+  "texto": "Último en doce treinta y cinco."
+ },
+ "ultimo_12_40": {
+  "texto": "Último en doce cuarenta."
+ },
+ "ultimo_12_45": {
+  "texto": "Último en doce cuarenta y cinco."
+ },
+ "ultimo_12_50": {
+  "texto": "Último en doce cincuenta."
+ },
+ "ultimo_12_55": {
+  "texto": "Último en doce cincuenta y cinco."
+ },
+ "ultimo_5_00": {
+  "texto": "Último en cinco en punto."
+ },
+ "ultimo_5_05": {
+  "texto": "Último en cinco cero cinco."
+ },
+ "ultimo_5_10": {
+  "texto": "Último en cinco diez."
+ },
+ "ultimo_5_15": {
+  "texto": "Último en cinco quince."
+ },
+ "ultimo_5_20": {
+  "texto": "Último en cinco veinte."
+ },
+ "ultimo_5_25": {
+  "texto": "Último en cinco veinticinco."
+ },
+ "ultimo_5_30": {
+  "texto": "Último en cinco treinta."
+ },
+ "ultimo_5_35": {
+  "texto": "Último en cinco treinta y cinco."
+ },
+ "ultimo_5_40": {
+  "texto": "Último en cinco cuarenta."
+ },
+ "ultimo_5_45": {
+  "texto": "Último en cinco cuarenta y cinco."
+ },
+ "ultimo_5_50": {
+  "texto": "Último en cinco cincuenta."
+ },
+ "ultimo_5_55": {
+  "texto": "Último en cinco cincuenta y cinco."
+ },
+ "ultimo_6_00": {
+  "texto": "Último en seis en punto."
+ },
+ "ultimo_6_05": {
+  "texto": "Último en seis cero cinco."
+ },
+ "ultimo_6_10": {
+  "texto": "Último en seis diez."
+ },
+ "ultimo_6_15": {
+  "texto": "Último en seis quince."
+ },
+ "ultimo_6_20": {
+  "texto": "Último en seis veinte."
+ },
+ "ultimo_6_25": {
+  "texto": "Último en seis veinticinco."
+ },
+ "ultimo_6_30": {
+  "texto": "Último en seis treinta."
+ },
+ "ultimo_6_35": {
+  "texto": "Último en seis treinta y cinco."
+ },
+ "ultimo_6_40": {
+  "texto": "Último en seis cuarenta."
+ },
+ "ultimo_6_45": {
+  "texto": "Último en seis cuarenta y cinco."
+ },
+ "ultimo_6_50": {
+  "texto": "Último en seis cincuenta."
+ },
+ "ultimo_6_55": {
+  "texto": "Último en seis cincuenta y cinco."
+ },
+ "ultimo_7_00": {
+  "texto": "Último en siete en punto."
+ },
+ "ultimo_7_05": {
+  "texto": "Último en siete cero cinco."
+ },
+ "ultimo_7_10": {
+  "texto": "Último en siete diez."
+ },
+ "ultimo_7_15": {
+  "texto": "Último en siete quince."
  },
  "ultimo_7_20": {
   "texto": "Último en siete veinte."
