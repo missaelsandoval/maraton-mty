@@ -101,10 +101,6 @@
  "logro_rapido": {
   "texto": "Eso sí, más rápido de lo que tocaba. La próxima, guárdalo."
  },
- "logro_s2026-10-30": {
-  "desc": "Fuerza B + caminata",
-  "texto": "¡Objetivo cumplido! Fuerza hecha. Unas piernas fuertes aguantan el kilómetro treinta."
- },
  "logro_s2026-10-31": {
   "desc": "Bici 40 min",
   "texto": "¡Objetivo cumplido! 40 minutos de bici. La recuperación también es entrenamiento."
@@ -121,9 +117,25 @@
   "desc": "29 km en 5:1, últimos 5 km a ritmo maratón",
   "texto": "¡Objetivo cumplido! 29 kilómetros de largo. Cada largo así es un ladrillo de tu maratón."
  },
- "obj_s2026-10-30": {
-  "desc": "Fuerza B + caminata",
-  "texto": "Objetivo de hoy: fuerza B. Técnica limpia en cada repetición. Y después, una caminata suave para soltar."
+ "logro_s2026-11-20": {
+  "desc": "Fuerza B ligera",
+  "texto": "¡Objetivo cumplido! Fuerza hecha. Unas piernas fuertes aguantan el kilómetro treinta."
+ },
+ "logro_s2026-11-22": {
+  "desc": "32 km · SIMULACRO DE CARRERA — desayuno y ropa de carrera, 5:1 desde el km 1, geles cada 35 min, últimos 6 km a ritmo maratón",
+  "texto": "¡Objetivo cumplido! 32 kilómetros de largo. Cada largo así es un ladrillo de tu maratón."
+ },
+ "logro_s2026-11-27": {
+  "desc": "Fuerza B ligera",
+  "texto": "¡Objetivo cumplido! Fuerza hecha. Unas piernas fuertes aguantan el kilómetro treinta."
+ },
+ "logro_s2026-11-29": {
+  "desc": "24 km en 5:1, últimos 4 km a ritmo maratón",
+  "texto": "¡Objetivo cumplido! 24 kilómetros de largo. Cada largo así es un ladrillo de tu maratón."
+ },
+ "logro_s2026-12-02": {
+  "desc": "6 km con 3 km a ritmo maratón",
+  "texto": "¡Objetivo cumplido! 3 kilómetros a ritmo maratón. Así se siente el trece de diciembre."
  },
  "obj_s2026-10-31": {
   "desc": "Bici 40 min",
@@ -148,6 +160,34 @@
  "obj_s2026-11-10": {
   "desc": "5 km fácil",
   "texto": "Objetivo de hoy: 5 kilómetros fáciles, entre diez quince y once en punto. Que se sienta suave: si puedes platicar, vas bien."
+ },
+ "obj_s2026-11-18": {
+  "desc": "Tempo: 2 km cal + 2 × 2.5 km fuerte (rec 3 min) + 3 km",
+  "texto": "Objetivo de hoy: tempo. 2 series de 2.5 kilómetros a ritmo de umbral, entre ocho en punto y ocho veinte, con calentamiento y enfriamiento. Fuerte, pero controlado."
+ },
+ "obj_s2026-11-19": {
+  "desc": "6 km fácil",
+  "texto": "Objetivo de hoy: 6 kilómetros fáciles, entre diez quince y once en punto. Que se sienta suave: si puedes platicar, vas bien."
+ },
+ "obj_s2026-11-26": {
+  "desc": "5 km fácil",
+  "texto": "Objetivo de hoy: 5 kilómetros fáciles, entre diez quince y once en punto. Que se sienta suave: si puedes platicar, vas bien."
+ },
+ "obj_s2026-11-29": {
+  "desc": "24 km en 5:1, últimos 4 km a ritmo maratón",
+  "texto": "Objetivo de hoy: 24 kilómetros de trote y caminata, cinco y uno, con los últimos 4 a ritmo maratón. Promedio entre ocho cuarenta y siete y nueve quince. Lo importante es terminar entero."
+ },
+ "obj_s2026-12-01": {
+  "desc": "5 km fácil + fuerza corporal",
+  "texto": "Objetivo de hoy: 5 kilómetros fáciles, entre diez quince y once en punto. Que se sienta suave: si puedes platicar, vas bien. Y después, fuerza corporal."
+ },
+ "obj_s2026-12-02": {
+  "desc": "6 km con 3 km a ritmo maratón",
+  "texto": "Objetivo de hoy: 6 kilómetros, con 3 a ritmo maratón en medio, entre ocho cuarenta y cinco y nueve en punto."
+ },
+ "obj_s2026-12-03": {
+  "desc": "3 km fácil",
+  "texto": "Objetivo de hoy: 3 kilómetros fáciles, entre diez quince y once en punto. Que se sienta suave: si puedes platicar, vas bien."
  },
  "paso_bici": {
   "texto": "Bici suave."
