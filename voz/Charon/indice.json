@@ -144,6 +144,10 @@
   "desc": "Fuerza B",
   "texto": "¡Objetivo cumplido! Fuerza hecha. Unas piernas fuertes aguantan el kilómetro treinta."
  },
+ "logro_s2026-11-07": {
+  "desc": "Bici 40 min",
+  "texto": "¡Objetivo cumplido! 40 minutos de bici. La recuperación también es entrenamiento."
+ },
  "logro_s2026-11-08": {
   "desc": "29 km en 5:1, últimos 5 km a ritmo maratón",
   "texto": "¡Objetivo cumplido! 29 kilómetros de largo. Cada largo así es un ladrillo de tu maratón."
@@ -199,6 +203,10 @@
  "logro_s2026-12-06": {
   "desc": "16 km en 5:1 muy suave",
   "texto": "¡Objetivo cumplido! 16 kilómetros de largo. Cada largo así es un ladrillo de tu maratón."
+ },
+ "obj_s2026-11-03": {
+  "desc": "5 km fácil",
+  "texto": "Objetivo de hoy: 5 kilómetros fáciles, entre diez quince y once en punto. Que se sienta suave: si puedes platicar, vas bien."
  },
  "obj_s2026-11-04": {
   "desc": "Intervalos: 2 km cal + 5 × 1 km (rec 2 min trote) + 2 km",
