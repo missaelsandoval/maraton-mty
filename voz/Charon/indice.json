@@ -92,11 +92,53 @@
  "km_17": {
   "texto": "Kilómetro diecisiete."
  },
+ "km_18": {
+  "texto": "Kilómetro dieciocho."
+ },
+ "km_19": {
+  "texto": "Kilómetro diecinueve."
+ },
  "km_2": {
   "texto": "Kilómetro dos."
  },
+ "km_20": {
+  "texto": "Kilómetro veinte."
+ },
+ "km_21": {
+  "texto": "Kilómetro veintiuno."
+ },
+ "km_22": {
+  "texto": "Kilómetro veintidós."
+ },
+ "km_23": {
+  "texto": "Kilómetro veintitrés."
+ },
+ "km_24": {
+  "texto": "Kilómetro veinticuatro."
+ },
+ "km_25": {
+  "texto": "Kilómetro veinticinco."
+ },
+ "km_26": {
+  "texto": "Kilómetro veintiséis."
+ },
+ "km_27": {
+  "texto": "Kilómetro veintisiete."
+ },
+ "km_28": {
+  "texto": "Kilómetro veintiocho."
+ },
+ "km_29": {
+  "texto": "Kilómetro veintinueve."
+ },
  "km_3": {
   "texto": "Kilómetro tres."
+ },
+ "km_30": {
+  "texto": "Kilómetro treinta."
+ },
+ "km_31": {
+  "texto": "Kilómetro treinta y uno."
  },
  "km_4": {
   "texto": "Kilómetro cuatro."
@@ -172,6 +214,10 @@
   "desc": "18 km en 5:1 suave",
   "texto": "¡Objetivo cumplido! 18 kilómetros de largo. Cada largo así es un ladrillo de tu maratón."
  },
+ "logro_s2026-11-17": {
+  "desc": "6 km fácil",
+  "texto": "¡Objetivo cumplido! 6 kilómetros fáciles. Así se construye la base."
+ },
  "logro_s2026-11-18": {
   "desc": "Tempo: 2 km cal + 2 × 2.5 km fuerte (rec 3 min) + 3 km",
   "texto": "¡Objetivo cumplido! Tempo completo: 2 series de 2.5 kilómetros a ritmo de umbral. Esto es lo que te hace más rápido."
@@ -196,13 +242,41 @@
   "desc": "24 km en 5:1, últimos 4 km a ritmo maratón",
   "texto": "¡Objetivo cumplido! 24 kilómetros de largo. Cada largo así es un ladrillo de tu maratón."
  },
+ "logro_s2026-12-01": {
+  "desc": "5 km fácil + fuerza corporal",
+  "texto": "¡Objetivo cumplido! 5 kilómetros fáciles. Así se construye la base."
+ },
  "logro_s2026-12-02": {
   "desc": "6 km con 3 km a ritmo maratón",
   "texto": "¡Objetivo cumplido! 3 kilómetros a ritmo maratón. Así se siente el trece de diciembre."
  },
+ "logro_s2026-12-03": {
+  "desc": "3 km fácil",
+  "texto": "¡Objetivo cumplido! 3 kilómetros fáciles. Así se construye la base."
+ },
+ "logro_s2026-12-05": {
+  "desc": "Caminata 30 min",
+  "texto": "¡Objetivo cumplido! 30 minutos de caminata. Piernas sueltas."
+ },
  "logro_s2026-12-06": {
   "desc": "16 km en 5:1 muy suave",
   "texto": "¡Objetivo cumplido! 16 kilómetros de largo. Cada largo así es un ladrillo de tu maratón."
+ },
+ "logro_s2026-12-08": {
+  "desc": "5 km fácil · la carga de carbohidratos empieza el jueves",
+  "texto": "¡Objetivo cumplido! 5 kilómetros fáciles. Así se construye la base."
+ },
+ "logro_s2026-12-09": {
+  "desc": "4 km con 4 × 400 m a ritmo maratón — solo para despertar las piernas",
+  "texto": "¡Objetivo cumplido! Piernas despiertas y listas para el domingo."
+ },
+ "logro_s2026-12-10": {
+  "desc": "3 km muy suave · recoger kit si abre este día",
+  "texto": "¡Objetivo cumplido! 3 kilómetros fáciles. Así se construye la base."
+ },
+ "logro_s2026-12-13": {
+  "desc": "MARATÓN — 6:45 AM · 5:1 desde el kilómetro 1",
+  "texto": "¡Lo lograste! Cuarenta y dos kilómetros. Monterrey es tuyo."
  },
  "obj_s2026-11-03": {
   "desc": "5 km fácil",
@@ -275,6 +349,10 @@
  "obj_s2026-11-26": {
   "desc": "5 km fácil",
   "texto": "Objetivo de hoy: 5 kilómetros fáciles, entre diez quince y once en punto. Que se sienta suave: si puedes platicar, vas bien."
+ },
+ "obj_s2026-11-27": {
+  "desc": "Fuerza B ligera",
+  "texto": "Objetivo de hoy: fuerza B ligera: menos carga, misma técnica."
  },
  "obj_s2026-11-29": {
   "desc": "24 km en 5:1, últimos 4 km a ritmo maratón",
@@ -423,6 +501,72 @@
  },
  "ultima_serie": {
   "texto": "Última serie."
+ },
+ "ultimo_10_00": {
+  "texto": "Último en diez en punto."
+ },
+ "ultimo_10_05": {
+  "texto": "Último en diez cero cinco."
+ },
+ "ultimo_10_10": {
+  "texto": "Último en diez diez."
+ },
+ "ultimo_10_15": {
+  "texto": "Último en diez quince."
+ },
+ "ultimo_10_20": {
+  "texto": "Último en diez veinte."
+ },
+ "ultimo_10_25": {
+  "texto": "Último en diez veinticinco."
+ },
+ "ultimo_10_30": {
+  "texto": "Último en diez treinta."
+ },
+ "ultimo_5_05": {
+  "texto": "Último en cinco cero cinco."
+ },
+ "ultimo_5_10": {
+  "texto": "Último en cinco diez."
+ },
+ "ultimo_5_15": {
+  "texto": "Último en cinco quince."
+ },
+ "ultimo_5_20": {
+  "texto": "Último en cinco veinte."
+ },
+ "ultimo_5_25": {
+  "texto": "Último en cinco veinticinco."
+ },
+ "ultimo_5_30": {
+  "texto": "Último en cinco treinta."
+ },
+ "ultimo_5_35": {
+  "texto": "Último en cinco treinta y cinco."
+ },
+ "ultimo_5_40": {
+  "texto": "Último en cinco cuarenta."
+ },
+ "ultimo_5_45": {
+  "texto": "Último en cinco cuarenta y cinco."
+ },
+ "ultimo_5_50": {
+  "texto": "Último en cinco cincuenta."
+ },
+ "ultimo_5_55": {
+  "texto": "Último en cinco cincuenta y cinco."
+ },
+ "ultimo_6_00": {
+  "texto": "Último en seis en punto."
+ },
+ "ultimo_6_05": {
+  "texto": "Último en seis cero cinco."
+ },
+ "ultimo_6_10": {
+  "texto": "Último en seis diez."
+ },
+ "ultimo_6_15": {
+  "texto": "Último en seis quince."
  },
  "ultimo_6_50": {
   "texto": "Último en seis cincuenta."
