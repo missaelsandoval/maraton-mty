@@ -170,10 +170,6 @@
  "logro_rapido": {
   "texto": "Eso sí, más rápido de lo que tocaba. La próxima, guárdalo."
  },
- "logro_s2026-11-05": {
-  "desc": "6 km fácil",
-  "texto": "¡Objetivo cumplido! 6 kilómetros fáciles. Así se construye la base."
- },
  "logro_s2026-11-06": {
   "desc": "Fuerza B",
   "texto": "¡Objetivo cumplido! Fuerza hecha. Unas piernas fuertes aguantan el kilómetro treinta."
@@ -269,10 +265,6 @@
  "logro_s2026-12-13": {
   "desc": "MARATÓN — 6:45 AM · 5:1 desde el kilómetro 1",
   "texto": "¡Lo lograste! Cuarenta y dos kilómetros. Monterrey es tuyo."
- },
- "obj_s2026-11-05": {
-  "desc": "6 km fácil",
-  "texto": "Objetivo de hoy: 6 kilómetros fáciles, entre diez quince y once en punto. Que se sienta suave: si puedes platicar, vas bien."
  },
  "obj_s2026-11-06": {
   "desc": "Fuerza B",
