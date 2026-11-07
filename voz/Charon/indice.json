@@ -140,8 +140,41 @@
  "km_31": {
   "texto": "Kilómetro treinta y uno."
  },
+ "km_32": {
+  "texto": "Kilómetro treinta y dos."
+ },
+ "km_33": {
+  "texto": "Kilómetro treinta y tres."
+ },
+ "km_34": {
+  "texto": "Kilómetro treinta y cuatro."
+ },
+ "km_35": {
+  "texto": "Kilómetro treinta y cinco."
+ },
+ "km_36": {
+  "texto": "Kilómetro treinta y seis."
+ },
+ "km_37": {
+  "texto": "Kilómetro treinta y siete."
+ },
+ "km_38": {
+  "texto": "Kilómetro treinta y ocho."
+ },
+ "km_39": {
+  "texto": "Kilómetro treinta y nueve."
+ },
  "km_4": {
   "texto": "Kilómetro cuatro."
+ },
+ "km_40": {
+  "texto": "Kilómetro cuarenta."
+ },
+ "km_41": {
+  "texto": "Kilómetro cuarenta y uno."
+ },
+ "km_42": {
+  "texto": "Kilómetro cuarenta y dos."
  },
  "km_5": {
   "texto": "Kilómetro cinco."
@@ -169,10 +202,6 @@
  },
  "logro_rapido": {
   "texto": "Eso sí, más rápido de lo que tocaba. La próxima, guárdalo."
- },
- "logro_s2026-11-06": {
-  "desc": "Fuerza B",
-  "texto": "¡Objetivo cumplido! Fuerza hecha. Unas piernas fuertes aguantan el kilómetro treinta."
  },
  "logro_s2026-11-07": {
   "desc": "Bici 40 min",
@@ -210,6 +239,10 @@
   "desc": "Tempo: 2 km cal + 2 × 2.5 km fuerte (rec 3 min) + 3 km",
   "texto": "¡Objetivo cumplido! Tempo completo: 2 series de 2.5 kilómetros a ritmo de umbral. Esto es lo que te hace más rápido."
  },
+ "logro_s2026-11-19": {
+  "desc": "6 km fácil",
+  "texto": "¡Objetivo cumplido! 6 kilómetros fáciles. Así se construye la base."
+ },
  "logro_s2026-11-20": {
   "desc": "Fuerza B ligera",
   "texto": "¡Objetivo cumplido! Fuerza hecha. Unas piernas fuertes aguantan el kilómetro treinta."
@@ -218,9 +251,17 @@
   "desc": "32 km · SIMULACRO DE CARRERA — desayuno y ropa de carrera, 5:1 desde el km 1, geles cada 35 min, últimos 6 km a ritmo maratón",
   "texto": "¡Objetivo cumplido! 32 kilómetros de largo. Cada largo así es un ladrillo de tu maratón."
  },
+ "logro_s2026-11-24": {
+  "desc": "5 km fácil",
+  "texto": "¡Objetivo cumplido! 5 kilómetros fáciles. Así se construye la base."
+ },
  "logro_s2026-11-25": {
   "desc": "Tempo: 2 km cal + 4 km a ritmo maratón + 2 km",
   "texto": "¡Objetivo cumplido! Tempo completo: 4 kilómetros a ritmo maratón. Esto es lo que te hace más rápido."
+ },
+ "logro_s2026-11-26": {
+  "desc": "5 km fácil",
+  "texto": "¡Objetivo cumplido! 5 kilómetros fáciles. Así se construye la base."
  },
  "logro_s2026-11-27": {
   "desc": "Fuerza B ligera",
@@ -266,10 +307,6 @@
   "desc": "MARATÓN — 6:45 AM · 5:1 desde el kilómetro 1",
   "texto": "¡Lo lograste! Cuarenta y dos kilómetros. Monterrey es tuyo."
  },
- "obj_s2026-11-06": {
-  "desc": "Fuerza B",
-  "texto": "Objetivo de hoy: fuerza B. Técnica limpia en cada repetición."
- },
  "obj_s2026-11-07": {
   "desc": "Bici 40 min",
   "texto": "Objetivo de hoy: 40 minutos de bici suave, con el pulso abajo de ciento veinticinco. Recuperar, no cansarte."
@@ -309,6 +346,10 @@
  "obj_s2026-11-19": {
   "desc": "6 km fácil",
   "texto": "Objetivo de hoy: 6 kilómetros fáciles, entre diez quince y once en punto. Que se sienta suave: si puedes platicar, vas bien."
+ },
+ "obj_s2026-11-20": {
+  "desc": "Fuerza B ligera",
+  "texto": "Objetivo de hoy: fuerza B ligera: menos carga, misma técnica."
  },
  "obj_s2026-11-22": {
   "desc": "32 km · SIMULACRO DE CARRERA — desayuno y ropa de carrera, 5:1 desde el km 1, geles cada 35 min, últimos 6 km a ritmo maratón",
