@@ -203,10 +203,6 @@
  "logro_rapido": {
   "texto": "Eso sí, más rápido de lo que tocaba. La próxima, guárdalo."
  },
- "logro_s2026-11-07": {
-  "desc": "Bici 40 min",
-  "texto": "¡Objetivo cumplido! 40 minutos de bici. La recuperación también es entrenamiento."
- },
  "logro_s2026-11-08": {
   "desc": "29 km en 5:1, últimos 5 km a ritmo maratón",
   "texto": "¡Objetivo cumplido! 29 kilómetros de largo. Cada largo así es un ladrillo de tu maratón."
@@ -306,10 +302,6 @@
  "logro_s2026-12-13": {
   "desc": "MARATÓN — 6:45 AM · 5:1 desde el kilómetro 1",
   "texto": "¡Lo lograste! Cuarenta y dos kilómetros. Monterrey es tuyo."
- },
- "obj_s2026-11-07": {
-  "desc": "Bici 40 min",
-  "texto": "Objetivo de hoy: 40 minutos de bici suave, con el pulso abajo de ciento veinticinco. Recuperar, no cansarte."
  },
  "obj_s2026-11-08": {
   "desc": "29 km en 5:1, últimos 5 km a ritmo maratón",
