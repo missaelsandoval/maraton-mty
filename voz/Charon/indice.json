@@ -203,10 +203,6 @@
  "logro_rapido": {
   "texto": "Eso sí, más rápido de lo que tocaba. La próxima, guárdalo."
  },
- "logro_s2026-11-15": {
-  "desc": "18 km en 5:1 suave",
-  "texto": "¡Objetivo cumplido! 18 kilómetros de largo. Cada largo así es un ladrillo de tu maratón."
- },
  "logro_s2026-11-17": {
   "desc": "6 km fácil",
   "texto": "¡Objetivo cumplido! 6 kilómetros fáciles. Así se construye la base."
@@ -282,10 +278,6 @@
  "logro_s2026-12-13": {
   "desc": "MARATÓN — 6:45 AM · 5:1 desde el kilómetro 1",
   "texto": "¡Lo lograste! Cuarenta y dos kilómetros. Monterrey es tuyo."
- },
- "obj_s2026-11-15": {
-  "desc": "18 km en 5:1 suave",
-  "texto": "Objetivo de hoy: 18 kilómetros de trote y caminata, cinco y uno. Promedio suave entre nueve cuarenta y cinco y diez quince. Lo importante es terminar entero."
  },
  "obj_s2026-11-17": {
   "desc": "6 km fácil",
