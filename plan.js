@@ -1174,8 +1174,8 @@ const PLAN = {
    "phase": "Trabajo específico",
    "phaseLabel": "Trabajo específico",
    "deload": false,
-   "targetKm": 54,
-   "longKm": 32,
+   "targetKm": 27,
+   "longKm": 5,
    "sessions": [
     {
      "id": "s2026-11-16",
@@ -1217,10 +1217,9 @@ const PLAN = {
      "id": "s2026-11-20",
      "date": "2026-11-20",
      "dow": "viernes",
-     "type": "cruzado",
+     "type": "descanso",
      "km": 0,
-     "desc": "Fuerza B ligera",
-     "fuerza": "B"
+     "desc": "Descanso completo"
     },
     {
      "id": "s2026-11-21",
@@ -1234,10 +1233,10 @@ const PLAN = {
      "id": "s2026-11-22",
      "date": "2026-11-22",
      "dow": "domingo",
-     "type": "largo",
-     "km": 32,
-     "desc": "32 km · SIMULACRO DE CARRERA — desayuno y ropa de carrera, 5:1 desde el km 1, geles cada 35 min, últimos 6 km a ritmo maratón",
-     "pace": "prom 8:47–9:15/km · 4.0–4.2 mph"
+     "type": "facil",
+     "km": 5,
+     "desc": "5 km muy suave · pulso bajo 130; si no amaneces bien, caminata",
+     "pace": "11:00–12:00/km · 3.1–3.4 mph"
     }
    ]
   },
@@ -1310,7 +1309,7 @@ const PLAN = {
      "dow": "domingo",
      "type": "largo",
      "km": 24,
-     "desc": "24 km en 5:1, últimos 4 km a ritmo maratón",
+     "desc": "24 km · SIMULACRO DE CARRERA — desayuno y ropa de carrera, 5:1 desde el km 1, geles cada 35 min, últimos 4 km a ritmo maratón",
      "pace": "prom 8:47–9:15/km · 4.0–4.2 mph"
     }
    ]
