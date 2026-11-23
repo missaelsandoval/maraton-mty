@@ -203,10 +203,6 @@
  "logro_rapido": {
   "texto": "Eso sí, más rápido de lo que tocaba. La próxima, guárdalo."
  },
- "logro_s2026-11-22": {
-  "desc": "5 km muy suave · pulso bajo 130; si no amaneces bien, caminata",
-  "texto": "¡Objetivo cumplido! 5 kilómetros fáciles. Así se construye la base."
- },
  "logro_s2026-11-24": {
   "desc": "5 km fácil",
   "texto": "¡Objetivo cumplido! 5 kilómetros fáciles. Así se construye la base."
@@ -224,7 +220,7 @@
   "texto": "¡Objetivo cumplido! Fuerza hecha. Unas piernas fuertes aguantan el kilómetro treinta."
  },
  "logro_s2026-11-29": {
-  "desc": "24 km en 5:1, últimos 4 km a ritmo maratón",
+  "desc": "24 km · SIMULACRO DE CARRERA — desayuno y ropa de carrera, 5:1 desde el km 1, geles cada 35 min, últimos 4 km a ritmo maratón",
   "texto": "¡Objetivo cumplido! 24 kilómetros de largo. Cada largo así es un ladrillo de tu maratón."
  },
  "logro_s2026-12-01": {
@@ -263,10 +259,6 @@
   "desc": "MARATÓN — 6:45 AM · 5:1 desde el kilómetro 1",
   "texto": "¡Lo lograste! Cuarenta y dos kilómetros. Monterrey es tuyo."
  },
- "obj_s2026-11-22": {
-  "desc": "32 km · SIMULACRO DE CARRERA — desayuno y ropa de carrera, 5:1 desde el km 1, geles cada 35 min, últimos 6 km a ritmo maratón",
-  "texto": "Simulacro de carrera. Objetivo de hoy: 32 kilómetros de trote y caminata, cinco y uno, con los últimos 6 a ritmo maratón. Promedio entre ocho cuarenta y siete y nueve quince. Lo importante es terminar entero. Todo como el trece de diciembre: desayuno, ropa y geles."
- },
  "obj_s2026-11-24": {
   "desc": "5 km fácil",
   "texto": "Objetivo de hoy: 5 kilómetros fáciles, entre diez quince y once en punto. Que se sienta suave: si puedes platicar, vas bien."
@@ -284,8 +276,8 @@
   "texto": "Objetivo de hoy: fuerza B ligera: menos carga, misma técnica."
  },
  "obj_s2026-11-29": {
-  "desc": "24 km en 5:1, últimos 4 km a ritmo maratón",
-  "texto": "Objetivo de hoy: 24 kilómetros de trote y caminata, cinco y uno, con los últimos 4 a ritmo maratón. Promedio entre ocho cuarenta y siete y nueve quince. Lo importante es terminar entero."
+  "desc": "24 km · SIMULACRO DE CARRERA — desayuno y ropa de carrera, 5:1 desde el km 1, geles cada 35 min, últimos 4 km a ritmo maratón",
+  "texto": "Simulacro de carrera. Objetivo de hoy: 24 kilómetros de trote y caminata, cinco y uno, con los últimos 4 a ritmo maratón. Promedio entre ocho cuarenta y siete y nueve quince. Lo importante es terminar entero. Todo como el trece de diciembre: desayuno, ropa y geles."
  },
  "obj_s2026-12-01": {
   "desc": "5 km fácil + fuerza corporal",
