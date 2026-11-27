@@ -203,18 +203,6 @@
  "logro_rapido": {
   "texto": "Eso sí, más rápido de lo que tocaba. La próxima, guárdalo."
  },
- "logro_s2026-11-24": {
-  "desc": "5 km fácil",
-  "texto": "¡Objetivo cumplido! 5 kilómetros fáciles. Así se construye la base."
- },
- "logro_s2026-11-25": {
-  "desc": "Tempo: 2 km cal + 4 km a ritmo maratón + 2 km",
-  "texto": "¡Objetivo cumplido! Tempo completo: 4 kilómetros a ritmo maratón. Esto es lo que te hace más rápido."
- },
- "logro_s2026-11-26": {
-  "desc": "5 km fácil",
-  "texto": "¡Objetivo cumplido! 5 kilómetros fáciles. Así se construye la base."
- },
  "logro_s2026-11-27": {
   "desc": "Fuerza B ligera",
   "texto": "¡Objetivo cumplido! Fuerza hecha. Unas piernas fuertes aguantan el kilómetro treinta."
@@ -258,18 +246,6 @@
  "logro_s2026-12-13": {
   "desc": "MARATÓN — 6:45 AM · 5:1 desde el kilómetro 1",
   "texto": "¡Lo lograste! Cuarenta y dos kilómetros. Monterrey es tuyo."
- },
- "obj_s2026-11-24": {
-  "desc": "5 km fácil",
-  "texto": "Objetivo de hoy: 5 kilómetros fáciles, entre diez quince y once en punto. Que se sienta suave: si puedes platicar, vas bien."
- },
- "obj_s2026-11-25": {
-  "desc": "Tempo: 2 km cal + 4 km a ritmo maratón + 2 km",
-  "texto": "Objetivo de hoy: tempo. 4 kilómetros a ritmo maratón, entre ocho cuarenta y cinco y nueve en punto, con calentamiento y enfriamiento. Fuerte, pero controlado."
- },
- "obj_s2026-11-26": {
-  "desc": "5 km fácil",
-  "texto": "Objetivo de hoy: 5 kilómetros fáciles, entre diez quince y once en punto. Que se sienta suave: si puedes platicar, vas bien."
  },
  "obj_s2026-11-27": {
   "desc": "Fuerza B ligera",
