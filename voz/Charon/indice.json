@@ -203,10 +203,6 @@
  "logro_rapido": {
   "texto": "Eso sí, más rápido de lo que tocaba. La próxima, guárdalo."
  },
- "logro_s2026-11-27": {
-  "desc": "Fuerza B ligera",
-  "texto": "¡Objetivo cumplido! Fuerza hecha. Unas piernas fuertes aguantan el kilómetro treinta."
- },
  "logro_s2026-11-29": {
   "desc": "24 km · SIMULACRO DE CARRERA — desayuno y ropa de carrera, 5:1 desde el km 1, geles cada 35 min, últimos 4 km a ritmo maratón",
   "texto": "¡Objetivo cumplido! 24 kilómetros de largo. Cada largo así es un ladrillo de tu maratón."
@@ -246,10 +242,6 @@
  "logro_s2026-12-13": {
   "desc": "MARATÓN — 6:45 AM · 5:1 desde el kilómetro 1",
   "texto": "¡Lo lograste! Cuarenta y dos kilómetros. Monterrey es tuyo."
- },
- "obj_s2026-11-27": {
-  "desc": "Fuerza B ligera",
-  "texto": "Objetivo de hoy: fuerza B ligera: menos carga, misma técnica."
  },
  "obj_s2026-11-29": {
   "desc": "24 km · SIMULACRO DE CARRERA — desayuno y ropa de carrera, 5:1 desde el km 1, geles cada 35 min, últimos 4 km a ritmo maratón",
